@@ -62,7 +62,7 @@ public class Grid {
             }
         }
         //search downwards
-        if (fruit_x < (grid[0].length-1)) {//if not in bottom row
+        if (fruit_x <= (grid[0].length-1)) {//if not in bottom row
             for (int y = fruit_y+1; y < grid[0].length; y++) {
                 if (grid[fruit_x][y].kolor == grid[fruit_x][fruit_y].kolor) {
                     length++;
@@ -163,6 +163,11 @@ public class Grid {
             for (int y = 0; y < 10; y++) {
                 grid[x][y].matchesY = getVerticalLineLength(x, y);
                 grid[x][y].matchesX = getHorizontalLineLength(x, y);
+                if (grid[x][y].matchesX>=3 || grid[x][y].matchesY>=3) {
+                    grid[x][y].is_matched = true;
+                } else {
+                    grid[x][y].is_matched = false;
+                }
             }
         }
     }
@@ -201,10 +206,14 @@ public class Grid {
                 grid[x][y].paintOwoc(g);
                 //g.drawString(x+""+y,gridToScreenX(x),gridToScreenY(y));
                 //g.drawString(grid[x][y].matchesY+"",gridToScreenX(x),gridToScreenY(y));
-                g.drawString(grid[x][y].matchesX+"",gridToScreenX(x),gridToScreenY(y));
+                //g.drawString(grid[x][y].matchesX+"",gridToScreenX(x),gridToScreenY(y));
                 if ((sel1x==x && sel1y==y) || (sel2x==x && sel2y==y)) {
                     g.setColor(Color.black);
                     g.drawRect(gridToScreenX(x), gridToScreenY(y), SLOT_SPAN, SLOT_SPAN);
+                }
+                if (grid[x][y].is_matched) {
+                    g.setColor(Color.black);
+                    g.fillOval(gridToScreenX(x)+10, gridToScreenY(y)+10, SLOT_SPAN/4, SLOT_SPAN/4);
                 }
             }
         }

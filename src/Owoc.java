@@ -12,6 +12,7 @@ public class Owoc {
 
     int matchesY = 0;//how many fruits are matched with it
     int matchesX = 0;
+    boolean is_matched = false;
     boolean isAnimated;
     int nextX;//for animation purposes
     int nextY;
