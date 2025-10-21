@@ -46,6 +46,8 @@ public class Owoc {
                 isAnimated = false;
             } else {
                 //by Kuba Brzozowski:
+                //w sensie przypomniał mi on równanie na wektor kierunkowy
+                //którego zapomniałam
                 dx = SPEED * dx / length;
                 dy = SPEED * dy / length;
                 x += dx;
