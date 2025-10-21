@@ -72,7 +72,7 @@ public class Grid {
             }
         }
 
-        return length;
+        return length;//
     }
     private int getHorizontalLineLength(int fruit_x, int fruit_y) {
         int length = 1;
