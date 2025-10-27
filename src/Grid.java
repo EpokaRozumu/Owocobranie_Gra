@@ -3,6 +3,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class Grid {
+    enum SwapState {READY,SWAPPING, SWAPPED, RESWAPPED, RESWAPPING};
 
     //czy to na pewno najlepszy sposób przechowywania informacji o zaznaczonych owocach??
     int sel1x, sel1y, sel2x, sel2y;
@@ -105,6 +106,7 @@ public class Grid {
         sel2x = -1;
         sel2y = -1;
     }
+
     private void swapSelectedFruits() {
         //set animation destinations
         grid[sel1x][sel1y].nextX = grid[sel2x][sel2y].x;
@@ -112,13 +114,24 @@ public class Grid {
         grid[sel2x][sel2y].nextX = grid[sel1x][sel1y].x;
         grid[sel2x][sel2y].nextY = grid[sel1x][sel1y].y;
         //set color destinations
+        //todo: WHY SOMETIMES FRUIT CHANGES COLOR?
         grid[sel1x][sel1y].nextKolor = grid[sel2x][sel2y].kolor;
         grid[sel2x][sel2y].nextKolor = grid[sel1x][sel1y].kolor;
         //System.out.println("Owoc1: x: "+sel1x+ " y: "  +sel1y+ "isAnimated: " + grid[sel1x][sel1y].isAnimated +"   Owoc2 : "+sel2x+" y: " +sel2y);
         //init animation
         grid[sel1x][sel1y].isAnimated = true;
         grid[sel2x][sel2y].isAnimated = true;
+        if (grid[sel2x][sel2y].swapState == "READY") {
+            grid[sel2x][sel2y].swapState = "SWAPPING";
+            grid[sel1x][sel1y].swapState ="SWAPPING";
+        } else if (grid[sel2x][sel2y].swapState == "SWAPPED") {
+            grid[sel2x][sel2y].swapState = "RESWAPPING";
+            grid[sel1x][sel1y].swapState = "RESWAPPING";
+        }
+
+
     }
+
     private boolean selectedFruitsAreAdjacent() {
         if ((sel1x+1) == sel2x || (sel1x-1)==sel2x) {
             if (sel1y==sel2y) {
@@ -135,7 +148,7 @@ public class Grid {
         int mx = e.getX();
         int my = e.getY();
         if ( GRID_OFFSET_X <mx && mx <GRID_OFFSET_X+10*SLOT_SPAN
-            && GRID_OFFSET_Y < my && my <GRID_OFFSET_Y+10*SLOT_SPAN) {
+                && GRID_OFFSET_Y < my && my <GRID_OFFSET_Y+10*SLOT_SPAN) {
 
             if (numSelectedFruits() == 0) {
                 sel1x = screenToGridX(mx);
@@ -177,24 +190,20 @@ public class Grid {
                 if (grid[x][y].isAnimated) {
                     grid[x][y].updateAnimation(timer_step);
                 } else if (numSelectedFruits() == 2){//if animation is not running, but fruits are still selected
-//                    //swap positions and colors
-//                    //positions
-//                    int tempx = grid[sel1x][sel1y].x;
-//                    int tempy = grid[sel1x][sel1y].y;
-//
-//                    grid[sel1x][sel1y].x = grid[sel2x][sel2y].x;
-//                    grid[sel1x][sel1y].y = grid[sel2x][sel2y].y;
-//
-//                    grid[sel2x][sel2y].x = tempx;
-//                    grid[sel2x][sel2y].y = tempy;
-//
-//                    //colors
-//                    Color tempColor;
-//                    tempColor = grid[sel2x][sel2y].kolor;
-//                    grid[sel2x][sel2y].kolor = grid[sel1x][sel1y].kolor;//kolor 2 <= kolor 1
-//                    grid[sel1x][sel1y].kolor = tempColor;
-//                    //only then
-                    unselectAllFruits();
+                    if (grid[sel1x][sel1y].swapState == "SWAPPED") {
+                        handleMatching();
+                        if (grid[sel1x][sel1y].is_matched || grid[sel2x][sel2y].is_matched) {//if matched
+                            unselectAllFruits();
+                        } else {
+                            swapSelectedFruits();//reswap
+                        }
+
+                    } else if (grid[sel1x][sel1y].swapState == "RESWAPPED") {
+                        grid[sel1x][sel1y].swapState = "READY";
+                        grid[sel2x][sel2y].swapState = "READY";
+                        unselectAllFruits();
+                    }
+
                 }
             }
 

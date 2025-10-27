@@ -1,7 +1,5 @@
 import java.awt.*;
 
-import java.util.Random;
-import java.util.random.*;
 public class Owoc {
     static String[] gatunki = {"banan", "pomarancza","truskawka","wisnia","winogrono"};
     static final int ANIMATION_DURATION = 500;
@@ -14,6 +12,8 @@ public class Owoc {
     int matchesX = 0;
     boolean is_matched = false;
     boolean isAnimated;
+    //enum SwapState {READY,SWAPPING, SWAPPED, RESWAPPING, RESWAPPED};
+    String swapState = "READY";
     int nextX;//for animation purposes
     int nextY;
 
@@ -30,31 +30,38 @@ public class Owoc {
         this.y = y;
         this.prevX = x;
         this.prevY = y;
+        this.swapState = "READY";
         //wylosuj typ owocu
         int randomNum = (int)(Math.random() * (gatunki.length));
         this.gatunek = gatunki[randomNum];
         this.kolor = kolory[randomNum];
     }
     public void updateAnimation(int timer_step) {
-            final int SPEED = 10;
-            double dx = nextX - x;
-            double dy = nextY - y;
-            double length = Math.sqrt(dx*dx + dy*dy);
-            if (length < SPEED) {
-                x = prevX;
-                y = prevY;
-                kolor = nextKolor;
-                isAnimated = false;
-            } else {
-                //by Kuba Brzozowski:
-                //w sensie przypomniał mi on równanie na wektor kierunkowy
-                //którego zapomniałam
-                dx = SPEED * dx / length;
-                dy = SPEED * dy / length;
-                x += dx;
-                y += dy;
-                isAnimated = true;
+        final int SPEED = 10;
+        double dx = nextX - x;
+        double dy = nextY - y;
+        double length = Math.sqrt(dx*dx + dy*dy);
+        if (length < SPEED) {
+            //finish swapping
+            x = prevX;
+            y = prevY;
+            kolor = nextKolor;
+            isAnimated = false;
+            if (swapState == "SWAPPING" ) {
+                swapState = "SWAPPED";
+            } else if (swapState == "RESWAPPING") {
+                swapState = "RESWAPPED";
             }
+        } else {
+            //by Kuba Brzozowski:
+            //w sensie przypomniał mi on równanie na wektor kierunkowy
+            //którego zapomniałam
+            dx = SPEED * dx / length;
+            dy = SPEED * dy / length;
+            x += dx;
+            y += dy;
+            isAnimated = true;
+        }
     }
     public void paintOwoc(Graphics g) {
         int r = 35;
