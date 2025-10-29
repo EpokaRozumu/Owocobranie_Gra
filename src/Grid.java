@@ -114,10 +114,9 @@ public class Grid {
         grid[sel2x][sel2y].nextX = grid[sel1x][sel1y].x;
         grid[sel2x][sel2y].nextY = grid[sel1x][sel1y].y;
         //set color destinations
-        //todo: WHY SOMETIMES FRUIT CHANGES COLOR?
         grid[sel1x][sel1y].nextKolor = grid[sel2x][sel2y].kolor;
         grid[sel2x][sel2y].nextKolor = grid[sel1x][sel1y].kolor;
-        //System.out.println("Owoc1: x: "+sel1x+ " y: "  +sel1y+ "isAnimated: " + grid[sel1x][sel1y].isAnimated +"   Owoc2 : "+sel2x+" y: " +sel2y);
+        System.out.println("Owoc1 nextkolor: "+grid[sel1x][sel1y].nextKolor+"Owoc2 nextKolor: " +grid[sel2x][sel2y].nextKolor);
         //init animation
         grid[sel1x][sel1y].isAnimated = true;
         grid[sel2x][sel2y].isAnimated = true;
@@ -125,6 +124,7 @@ public class Grid {
             grid[sel2x][sel2y].swapState = "SWAPPING";
             grid[sel1x][sel1y].swapState ="SWAPPING";
         } else if (grid[sel2x][sel2y].swapState == "SWAPPED") {
+            System.out.println("Reswapping");
             grid[sel2x][sel2y].swapState = "RESWAPPING";
             grid[sel1x][sel1y].swapState = "RESWAPPING";
         }
@@ -149,15 +149,22 @@ public class Grid {
         int my = e.getY();
         if ( GRID_OFFSET_X <mx && mx <GRID_OFFSET_X+10*SLOT_SPAN
                 && GRID_OFFSET_Y < my && my <GRID_OFFSET_Y+10*SLOT_SPAN) {
-
+            //handle selecting fruits
             if (numSelectedFruits() == 0) {
                 sel1x = screenToGridX(mx);
                 sel1y = screenToGridY(my);
             } else if (numSelectedFruits() == 1) {
-                sel2x = screenToGridX(mx);
-                sel2y = screenToGridY(my);
+                int newx = screenToGridX(mx);
+                int newy = screenToGridY(my);
+                if (!(newx == sel1x && newy == sel1y)) {//if the second fruit is not the same as the first
+                    sel2x = newx;
+                    sel2y = newy;
+                }
+
                 if (selectedFruitsAreAdjacent()) {
                     swapSelectedFruits();
+                } else {
+                    unselectAllFruits();
                 }
                 //unselectAllFruits();
                 return true;
@@ -165,6 +172,7 @@ public class Grid {
             } else {
                 System.out.println("Error: wrong selection order.");
                 System.out.println("sel1x: "+sel1x+" sel1y: "+sel1y+" sel2x: "+sel2x+" sel2y: "+sel2y);
+                //unselectAllFruits();
             }
         }
 
@@ -190,12 +198,18 @@ public class Grid {
                 if (grid[x][y].isAnimated) {
                     grid[x][y].updateAnimation(timer_step);
                 } else if (numSelectedFruits() == 2){//if animation is not running, but fruits are still selected
-                    if (grid[sel1x][sel1y].swapState == "SWAPPED") {
+                    if (grid[sel1x][sel1y].swapState == "SWAPPED"&& grid[sel2x][sel2y].swapState == "SWAPPED") {
                         handleMatching();
                         if (grid[sel1x][sel1y].is_matched || grid[sel2x][sel2y].is_matched) {//if matched
+                            grid[sel1x][sel1y].swapState = "READY";
+                            grid[sel2x][sel2y].swapState = "READY";
                             unselectAllFruits();
+                            //now program is ready for selecting new fruits
+
                         } else {
-                            swapSelectedFruits();//reswap
+                            swapSelectedFruits();//start reswapping
+                            grid[sel1x][sel1y].swapState = "RESWAPPED";
+                            grid[sel2x][sel2y].swapState = "RESWAPPED";//WAS AN ERROR THERE??
                         }
 
                     } else if (grid[sel1x][sel1y].swapState == "RESWAPPED") {
@@ -226,6 +240,7 @@ public class Grid {
                 }
             }
         }
+        g.setColor(Color.black);
         if (sel1x != -1 && sel1y != -1) {
             g.drawString("selected1: " + grid[sel1x][sel1y].kolor, 100, 10);
         }

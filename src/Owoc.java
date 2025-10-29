@@ -43,6 +43,7 @@ public class Owoc {
         double length = Math.sqrt(dx*dx + dy*dy);
         if (length < SPEED) {
             //finish swapping
+            //quickly snap to previous position and change color to next color??
             x = prevX;
             y = prevY;
             kolor = nextKolor;
