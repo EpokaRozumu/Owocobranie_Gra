@@ -1,6 +1,7 @@
 import java.awt.*;
 
 public class Owoc {
+    //fruit class
     static String[] gatunki = {"banan", "pomarancza","truskawka","wisnia","winogrono"};
     static final int ANIMATION_DURATION = 500;
     //replace with images!
