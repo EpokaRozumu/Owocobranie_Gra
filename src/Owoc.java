@@ -5,32 +5,33 @@ import java.io.File;
 import java.io.IOException;
 
 public class Owoc {
+
     static String[] gatunki = {"cytryna", "pomarancza","truskawka","wisnia","winogrono"};
-    static BufferedImage[] images = new BufferedImage[gatunki.length];
     static String[] imagePaths = {"cytryna.bmp","pomarancza.bmp","arbuz.bmp","wisnia.bmp","winogrono.bmp"};
+    static BufferedImage[] images = new BufferedImage[gatunki.length];
+
+
     static final int ANIMATION_DURATION = 500;
-    //replace with images!
-    static Color[] kolory = {Color.yellow, Color.orange, Color.pink, Color.red,Color.blue};
+
     int x;
     int y;
 
     int matchesY = 0;//how many fruits are matched with it
     int matchesX = 0;
     boolean is_matched = false;
+
     boolean isAnimated;
-    //enum SwapState {READY,SWAPPING, SWAPPED, RESWAPPING, RESWAPPED};
     String swapState = "READY";
+    //enum SwapState {READY,SWAPPING, SWAPPED, RESWAPPING, RESWAPPED};
+
     int nextX;//for animation purposes
     int nextY;
-
     int prevX;//for finishing animation
     int prevY;
 
     String gatunek;
-    Color kolor;
-    BufferedImage image;
-    BufferedImage nextImage;
-    Color nextKolor;
+    int imageIndex = 0;
+    int nextImageIndex = 0;
 
 
     public Owoc(int x, int y) {
@@ -41,9 +42,8 @@ public class Owoc {
         this.swapState = "READY";
         //wylosuj typ owocu
         int randomNum = (int)(Math.random() * (gatunki.length));
+        this.imageIndex = randomNum;
         this.gatunek = gatunki[randomNum];
-        this.kolor = kolory[randomNum];
-        this.image = images[randomNum];
     }
     public static void loadImages() {
         for (int i = 0; i < gatunki.length; i++) {
@@ -62,8 +62,7 @@ public class Owoc {
         //because position on screen must match grid position
         x = prevX;
         y = prevY;
-        kolor = nextKolor;
-        image = nextImage;
+        imageIndex = nextImageIndex;
         isAnimated = false;
         if (swapState == "SWAPPING" ) {
             swapState = "SWAPPED";
@@ -103,7 +102,7 @@ public class Owoc {
 
         //g.fillOval(x,y,r,r);
 
-        g.drawImage(image,x-5,y-5,46,46,null);
+        g.drawImage(images[imageIndex],x-5,y-5,46,46,null);
 
     }
 }

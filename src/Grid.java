@@ -62,7 +62,7 @@ public class Grid {
         //search upwards
         if (fruit_y > 0) {//if not in top row
             for (int y = fruit_y-1; y >= 0; y--) {
-                if (grid[fruit_x][y].kolor == grid[fruit_x][fruit_y].kolor) {
+                if (grid[fruit_x][y].imageIndex == grid[fruit_x][fruit_y].imageIndex) {
                     length++;
                 } else {
                     break;
@@ -72,7 +72,7 @@ public class Grid {
         //search downwards
         if (fruit_x <= (grid[0].length-1)) {//if not in bottom row
             for (int y = fruit_y+1; y < grid[0].length; y++) {
-                if (grid[fruit_x][y].kolor == grid[fruit_x][fruit_y].kolor) {
+                if (grid[fruit_x][y].imageIndex == grid[fruit_x][fruit_y].imageIndex) {
                     length++;
                 } else {
                     break;
@@ -87,7 +87,7 @@ public class Grid {
         //search to the left
         if (fruit_x > 0) {//if not in  leftmost row
             for (int x = fruit_x-1; x >= 0; x--) {
-                if (grid[x][fruit_y].kolor == grid[fruit_x][fruit_y].kolor) {
+                if (grid[x][fruit_y].imageIndex == grid[fruit_x][fruit_y].imageIndex) {
                     length++;
                 } else {
                     break;
@@ -97,7 +97,7 @@ public class Grid {
         //search downwards
         if (fruit_x < (grid.length-1)) {//if not in rightmost row
             for (int x = fruit_x+1; x < grid.length; x++) {
-                if (grid[x][fruit_y].kolor == grid[fruit_x][fruit_y].kolor) {
+                if (grid[x][fruit_y].imageIndex == grid[fruit_x][fruit_y].imageIndex) {
                     length++;
                 } else {
                     break;
@@ -120,14 +120,9 @@ public class Grid {
         grid[sel1x][sel1y].nextY = grid[sel2x][sel2y].y;
         grid[sel2x][sel2y].nextX = grid[sel1x][sel1y].x;
         grid[sel2x][sel2y].nextY = grid[sel1x][sel1y].y;
-        //set color destinations
-        grid[sel1x][sel1y].nextKolor = grid[sel2x][sel2y].kolor;
-        grid[sel2x][sel2y].nextKolor = grid[sel1x][sel1y].kolor;
-
-        grid[sel1x][sel1y].nextImage = grid[sel2x][sel2y].image;
-        grid[sel2x][sel2y].nextImage = grid[sel1x][sel1y].image;
-
-        System.out.println("Owoc1 nextkolor: "+grid[sel1x][sel1y].nextKolor+"Owoc2 nextKolor: " +grid[sel2x][sel2y].nextKolor);
+        //set image destinations
+        grid[sel1x][sel1y].nextImageIndex = grid[sel2x][sel2y].imageIndex;
+        grid[sel2x][sel2y].nextImageIndex = grid[sel1x][sel1y].imageIndex;
         //init animation
         grid[sel1x][sel1y].isAnimated = true;
         grid[sel2x][sel2y].isAnimated = true;
