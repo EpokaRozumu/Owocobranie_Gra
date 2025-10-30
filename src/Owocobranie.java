@@ -22,7 +22,10 @@ public class Owocobranie {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //Po powiększeniu okna panel powinien pozostać na środku, a nie
         //w lewym górnym rogu.
-        f.add(new GamePanel());
+        f.setLayout(new BoxLayout(f.getContentPane(), BoxLayout.Y_AXIS));
+        GamePanel panel = new GamePanel();
+        panel.setMaximumSize(new Dimension(800, 600));
+        f.add(panel);
         f.pack();
         f.setVisible(true);
     }
