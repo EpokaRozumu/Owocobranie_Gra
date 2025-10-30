@@ -192,34 +192,46 @@ public class Grid {
             }
         }
     }
+    public void explodeMatchedFruits() {
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
+                if (grid[x][y].is_matched) {
+                    grid[x][y].imageIndex = -1;
+                }
+            }
+        }
+    }
+    public void handleSwappedFruits() {
+        if (grid[sel1x][sel1y].swapState == "SWAPPED"&& grid[sel2x][sel2y].swapState == "SWAPPED") {
+            //After the fruits are swapped for the fist time
+            handleMatching();//checks matches for each fruit
+            if (grid[sel1x][sel1y].is_matched || grid[sel2x][sel2y].is_matched) {//if matched
+                grid[sel1x][sel1y].swapState = "READY";
+                grid[sel2x][sel2y].swapState = "READY";
+                //explodeMatchedFruits();//todo: uncomment
+                unselectAllFruits();
+                //now the program is ready for selecting new fruits
+            } else {
+                swapSelectedFruits();//start reswapping
+                grid[sel1x][sel1y].swapState = "RESWAPPED";
+                grid[sel2x][sel2y].swapState = "RESWAPPED";
+                //Reswapping that starts here, ends in updateAnimation function
+                //when fruits reach desired positions
+            }
+        } else if (grid[sel1x][sel1y].swapState == "RESWAPPED") {
+            //disables reswapping after reswapping
+            grid[sel1x][sel1y].swapState = "READY";
+            grid[sel2x][sel2y].swapState = "READY";
+            unselectAllFruits();
+        }
+    }
     public void updateAnimation(int timer_step) {
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
                 if (grid[x][y].isAnimated) {
                     grid[x][y].updateAnimation(timer_step);
                 } else if (numSelectedFruits() == 2){//if animation is not running, but fruits are still selected
-                    if (grid[sel1x][sel1y].swapState == "SWAPPED"&& grid[sel2x][sel2y].swapState == "SWAPPED") {
-                        //After the fruits are swapped for the fist time
-                        handleMatching();//checks matches for each fruit
-                        if (grid[sel1x][sel1y].is_matched || grid[sel2x][sel2y].is_matched) {//if matched
-                            grid[sel1x][sel1y].swapState = "READY";
-                            grid[sel2x][sel2y].swapState = "READY";
-                            unselectAllFruits();
-                            //now the program is ready for selecting new fruits
-                        } else {
-                            swapSelectedFruits();//start reswapping
-                            grid[sel1x][sel1y].swapState = "RESWAPPED";
-                            grid[sel2x][sel2y].swapState = "RESWAPPED";
-                            //Reswapping that starts here, ends in updateAnimation function
-                            //when fruits reach desired positions
-                        }
-                    } else if (grid[sel1x][sel1y].swapState == "RESWAPPED") {
-                        //disables reswapping after reswapping
-                        grid[sel1x][sel1y].swapState = "READY";
-                        grid[sel2x][sel2y].swapState = "READY";
-                        unselectAllFruits();
-                    }
-
+                    handleSwappedFruits();
                 }
             }
 

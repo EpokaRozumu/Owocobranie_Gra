@@ -30,7 +30,7 @@ public class Owoc {
     int prevY;
 
     String gatunek;
-    int imageIndex = 0;
+    int imageIndex = 0;//-1 if this fruit was exploded
     int nextImageIndex = 0;
 
 
@@ -95,14 +95,8 @@ public class Owoc {
     }
     public void paintOwoc(Graphics g) {
         int r = 35;
-//        g.setColor(Color.black);
-//        g.drawOval(x,y,r,r);
-//        g.setColor(kolor);
-        //temp:
-
-        //g.fillOval(x,y,r,r);
-
-        g.drawImage(images[imageIndex],x-5,y-5,46,46,null);
-
+        if (imageIndex > -1) {
+            g.drawImage(images[imageIndex],x-2,y-2,40,40,null);
+        }
     }
 }
