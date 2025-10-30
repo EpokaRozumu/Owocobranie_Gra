@@ -1,8 +1,13 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class Owoc {
-    //fruit class
-    static String[] gatunki = {"banan", "pomarancza","truskawka","wisnia","winogrono"};
+    static String[] gatunki = {"cytryna", "pomarancza","truskawka","wisnia","winogrono"};
+    static BufferedImage[] images = new BufferedImage[gatunki.length];
+    static String[] imagePaths = {"cytryna.bmp","pomarancza.bmp","arbuz.bmp","wisnia.bmp","winogrono.bmp"};
     static final int ANIMATION_DURATION = 500;
     //replace with images!
     static Color[] kolory = {Color.yellow, Color.orange, Color.pink, Color.red,Color.blue};
@@ -18,11 +23,13 @@ public class Owoc {
     int nextX;//for animation purposes
     int nextY;
 
-    int prevX = x;//for
-    int prevY = y;
+    int prevX;//for finishing animation
+    int prevY;
 
     String gatunek;
     Color kolor;
+    BufferedImage image;
+    BufferedImage nextImage;
     Color nextKolor;
 
 
@@ -36,30 +43,52 @@ public class Owoc {
         int randomNum = (int)(Math.random() * (gatunki.length));
         this.gatunek = gatunki[randomNum];
         this.kolor = kolory[randomNum];
+        this.image = images[randomNum];
     }
+    public static void loadImages() {
+        for (int i = 0; i < gatunki.length; i++) {
+            try {
+                images[i] = ImageIO.read(new File(imagePaths[i]));
+            } catch (IOException e) {
+                System.out.println("Error loading image "+imagePaths[i]);
+                //throw new RuntimeException(e);
+
+            }
+        }
+
+    }
+    public void finishSwapping() {
+        //quickly jump to previous position
+        //because position on screen must match grid position
+        x = prevX;
+        y = prevY;
+        kolor = nextKolor;
+        image = nextImage;
+        isAnimated = false;
+        if (swapState == "SWAPPING" ) {
+            swapState = "SWAPPED";
+        } else if (swapState == "RESWAPPING") {
+            swapState = "RESWAPPED";
+        }
+    }
+
     public void updateAnimation(int timer_step) {
+        //This function is called by Grid's update animation
+        //which is called repeatadly by the Swing timer
         final int SPEED = 10;
         double dx = nextX - x;
         double dy = nextY - y;
-        double length = Math.sqrt(dx*dx + dy*dy);
-        if (length < SPEED) {
-            //finish swapping
-            //quickly snap to previous position and change color to next color??
-            x = prevX;
-            y = prevY;
-            kolor = nextKolor;
-            isAnimated = false;
-            if (swapState == "SWAPPING" ) {
-                swapState = "SWAPPED";
-            } else if (swapState == "RESWAPPING") {
-                swapState = "RESWAPPED";
-            }
+        double distance = Math.sqrt(dx*dx + dy*dy);//distance to destination
+        if (distance < SPEED) {
+            finishSwapping();
         } else {
             //by Kuba Brzozowski:
             //w sensie przypomniał mi on równanie na wektor kierunkowy
             //którego zapomniałam
-            dx = SPEED * dx / length;
-            dy = SPEED * dy / length;
+
+            //move at constant speed towards destination
+            dx = SPEED * dx / distance;
+            dy = SPEED * dy / distance;
             x += dx;
             y += dy;
             isAnimated = true;
@@ -67,10 +96,14 @@ public class Owoc {
     }
     public void paintOwoc(Graphics g) {
         int r = 35;
-        g.setColor(Color.black);
-        g.drawOval(x,y,r,r);
-        g.setColor(kolor);
-        g.fillOval(x,y,r,r);
+//        g.setColor(Color.black);
+//        g.drawOval(x,y,r,r);
+//        g.setColor(kolor);
+        //temp:
+
+        //g.fillOval(x,y,r,r);
+
+        g.drawImage(image,x-5,y-5,46,46,null);
 
     }
 }
