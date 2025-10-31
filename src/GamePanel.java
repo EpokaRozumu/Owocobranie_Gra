@@ -16,9 +16,10 @@ class GamePanel extends JPanel {
     Grid grid = new Grid();
     final int TIMER_SPEED = 100;
     int secondsPassed = 0;
+    Font largeFont= new Font("Comic Sans MS", Font.BOLD, 50);
+    Font smallFont;
     Timer timer;
     public GamePanel() {
-
         setBorder(BorderFactory.createLineBorder(Color.black));
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -48,7 +49,8 @@ class GamePanel extends JPanel {
     public void paintComponent(Graphics g) {
         //g will actually be Graphics2d
         super.paintComponent(g);
-        g.drawString("Owocobranie", 20, 20);
+        g.setFont(largeFont);
+        g.drawString("Owocobranie", 200, 55);//may replace this with image of a title
         g.drawString(secondsPassed + "", 20, 50);
         redSquare.paintSquare(g);
         grid.paintGrid(g);

@@ -4,12 +4,10 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 //import java.util.ArrayList;
 //this is a comment
 public class Grid {
     //enum SwapState {READY,SWAPPING, SWAPPED, RESWAPPED, RESWAPPING};
-
     //czy to na pewno najlepszy sposób przechowywania informacji o zaznaczonych owocach??
     int sel1x, sel1y, sel2x, sel2y;
     static final int SLOT_SPAN = 40;
@@ -126,13 +124,13 @@ public class Grid {
         //init animation
         grid[sel1x][sel1y].isAnimated = true;
         grid[sel2x][sel2y].isAnimated = true;
-        if (grid[sel2x][sel2y].swapState == "READY") {
-            grid[sel2x][sel2y].swapState = "SWAPPING";
-            grid[sel1x][sel1y].swapState ="SWAPPING";
-        } else if (grid[sel2x][sel2y].swapState == "SWAPPED") {
+        if (grid[sel2x][sel2y].animationState == "READY") {
+            grid[sel2x][sel2y].animationState = "SWAPPING";
+            grid[sel1x][sel1y].animationState ="SWAPPING";
+        } else if (grid[sel2x][sel2y].animationState == "SWAPPED") {
             System.out.println("Reswapping");
-            grid[sel2x][sel2y].swapState = "RESWAPPING";
-            grid[sel1x][sel1y].swapState = "RESWAPPING";
+            grid[sel2x][sel2y].animationState = "RESWAPPING";
+            grid[sel1x][sel1y].animationState = "RESWAPPING";
         }
 
 
@@ -201,44 +199,51 @@ public class Grid {
             }
         }
     }
+    public void handleFalling(int x, int y) {
+        if (grid[x][y+1].imageIndex == -1) {
+
+        }
+    }
     public void handleSwappedFruits() {
-        if (grid[sel1x][sel1y].swapState == "SWAPPED"&& grid[sel2x][sel2y].swapState == "SWAPPED") {
+        if (grid[sel1x][sel1y].animationState == "SWAPPED"&& grid[sel2x][sel2y].animationState == "SWAPPED") {
             //After the fruits are swapped for the fist time
             handleMatching();//checks matches for each fruit
             if (grid[sel1x][sel1y].is_matched || grid[sel2x][sel2y].is_matched) {//if matched
-                grid[sel1x][sel1y].swapState = "READY";
-                grid[sel2x][sel2y].swapState = "READY";
+                grid[sel1x][sel1y].animationState = "READY";
+                grid[sel2x][sel2y].animationState = "READY";
                 //explodeMatchedFruits();//todo: uncomment
                 unselectAllFruits();
                 //now the program is ready for selecting new fruits
             } else {
                 swapSelectedFruits();//start reswapping
-                grid[sel1x][sel1y].swapState = "RESWAPPED";
-                grid[sel2x][sel2y].swapState = "RESWAPPED";
+                grid[sel1x][sel1y].animationState = "RESWAPPED";
+                grid[sel2x][sel2y].animationState = "RESWAPPED";
                 //Reswapping that starts here, ends in updateAnimation function
                 //when fruits reach desired positions
             }
-        } else if (grid[sel1x][sel1y].swapState == "RESWAPPED") {
+        } else if (grid[sel1x][sel1y].animationState == "RESWAPPED") {
             //disables reswapping after reswapping
-            grid[sel1x][sel1y].swapState = "READY";
-            grid[sel2x][sel2y].swapState = "READY";
+            grid[sel1x][sel1y].animationState = "READY";
+            grid[sel2x][sel2y].animationState = "READY";
             unselectAllFruits();
         }
     }
     public void updateAnimation(int timer_step) {
+        boolean isAnyAnimated = false;
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
                 if (grid[x][y].isAnimated) {
                     grid[x][y].updateAnimation(timer_step);
-                } else if (numSelectedFruits() == 2){//if animation is not running, but fruits are still selected
-                    handleSwappedFruits();
+                    isAnyAnimated = true;
                 }
             }
-
+        }
+        if (numSelectedFruits() == 2 && isAnyAnimated==false) {
+            //if animation is not running, but fruits are still selected
+            handleSwappedFruits();
         }
     }
     public void paintGrid(Graphics g) {
-
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
                 grid[x][y].paintOwoc(g);

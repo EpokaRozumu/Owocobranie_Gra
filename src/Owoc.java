@@ -10,7 +10,6 @@ public class Owoc {
     static String[] imagePaths = {"cytryna.bmp","pomarancza.bmp","arbuz.bmp","wisnia.bmp","winogrono.bmp"};
     static BufferedImage[] images = new BufferedImage[gatunki.length];
 
-
     static final int ANIMATION_DURATION = 500;
 
     int x;
@@ -21,7 +20,8 @@ public class Owoc {
     boolean is_matched = false;
 
     boolean isAnimated;
-    String swapState = "READY";
+
+    String animationState = "READY";
     //enum SwapState {READY,SWAPPING, SWAPPED, RESWAPPING, RESWAPPED};
 
     int nextX;//for animation purposes
@@ -31,6 +31,8 @@ public class Owoc {
 
     String gatunek;
     int imageIndex = 0;//-1 if this fruit was exploded
+    //image index is useful, because it takes less space if fruits hold only their type, and not a whole image
+    //I hope it will make this program faster?
     int nextImageIndex = 0;
 
 
@@ -39,7 +41,7 @@ public class Owoc {
         this.y = y;
         this.prevX = x;
         this.prevY = y;
-        this.swapState = "READY";
+        this.animationState = "READY";
         //wylosuj typ owocu
         int randomNum = (int)(Math.random() * (gatunki.length));
         this.imageIndex = randomNum;
@@ -64,10 +66,10 @@ public class Owoc {
         y = prevY;
         imageIndex = nextImageIndex;
         isAnimated = false;
-        if (swapState == "SWAPPING" ) {
-            swapState = "SWAPPED";
-        } else if (swapState == "RESWAPPING") {
-            swapState = "RESWAPPED";
+        if (animationState == "SWAPPING" ) {
+            animationState = "SWAPPED";
+        } else if (animationState == "RESWAPPING") {
+            animationState = "RESWAPPED";
         }
     }
 
