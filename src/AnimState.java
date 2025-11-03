@@ -4,5 +4,6 @@ public enum AnimState {
     SWAPPED,
     RESWAPPING,
     RESWAPPED,
-    FALLING
+    FALLING,
+    FALLEN
 }

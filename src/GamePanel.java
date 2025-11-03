@@ -38,7 +38,7 @@ class GamePanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 secondsPassed++;
                 grid.updateAnimation(TIMER_SPEED);
-                grid.handleMatching();
+                //grid.labelMatchedFruits();deleting this may break the game?
                 //redSquare.updateAnimation(TIMER_SPEED);
                 repaint();
             }

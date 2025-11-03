@@ -21,9 +21,7 @@ public class Owoc {
 
     boolean isAnimated;
 
-    String animationState = "READY";
-    //enum SwapState {READY,SWAPPING, SWAPPED, RESWAPPING, RESWAPPED};
-
+    AnimState animationState;
     int nextX;//for animation purposes
     int nextY;
     int prevX;//for finishing animation
@@ -41,7 +39,7 @@ public class Owoc {
         this.y = y;
         this.prevX = x;
         this.prevY = y;
-        this.animationState = "READY";
+        this.animationState = AnimState.READY;
         //wylosuj typ owocu
         int randomNum = (int)(Math.random() * (gatunki.length));
         this.imageIndex = randomNum;
@@ -66,11 +64,15 @@ public class Owoc {
         y = prevY;
         imageIndex = nextImageIndex;
         isAnimated = false;
-        if (animationState == "SWAPPING" ) {
-            animationState = "SWAPPED";
-        } else if (animationState == "RESWAPPING") {
-            animationState = "RESWAPPED";
+        if (animationState == AnimState.SWAPPING ) {
+            animationState = AnimState.SWAPPED;
+        } else if (animationState == AnimState.RESWAPPING) {
+            animationState = AnimState.RESWAPPED;
         }
+    }
+    public void finishFalling() {
+        //isAnimated = false;
+        animationState = AnimState.FALLEN;
     }
 
     public void updateAnimation(int timer_step) {
@@ -81,7 +83,11 @@ public class Owoc {
         double dy = nextY - y;
         double distance = Math.sqrt(dx*dx + dy*dy);//distance to destination
         if (distance < SPEED) {
-            finishSwapping();
+            if (animationState == AnimState.FALLING) {
+                finishFalling();
+            } else {
+                finishSwapping();
+            }
         } else {
             //by Kuba Brzozowski:
             //w sensie przypomniał mi on równanie na wektor kierunkowy

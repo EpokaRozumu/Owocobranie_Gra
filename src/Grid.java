@@ -124,18 +124,15 @@ public class Grid {
         //init animation
         grid[sel1x][sel1y].isAnimated = true;
         grid[sel2x][sel2y].isAnimated = true;
-        if (grid[sel2x][sel2y].animationState == "READY") {
-            grid[sel2x][sel2y].animationState = "SWAPPING";
-            grid[sel1x][sel1y].animationState ="SWAPPING";
-        } else if (grid[sel2x][sel2y].animationState == "SWAPPED") {
+        if (grid[sel2x][sel2y].animationState == AnimState.READY) {
+            grid[sel2x][sel2y].animationState = AnimState.SWAPPING;
+            grid[sel1x][sel1y].animationState =AnimState.SWAPPING;
+        } else if (grid[sel2x][sel2y].animationState == AnimState.SWAPPED) {
             System.out.println("Reswapping");
-            grid[sel2x][sel2y].animationState = "RESWAPPING";
-            grid[sel1x][sel1y].animationState = "RESWAPPING";
+            grid[sel2x][sel2y].animationState = AnimState.RESWAPPING;
+            grid[sel1x][sel1y].animationState = AnimState.RESWAPPING;
         }
-
-
     }
-
     private boolean selectedFruitsAreAdjacent() {
         if ((sel1x+1) == sel2x || (sel1x-1)==sel2x) {
             if (sel1y==sel2y) {
@@ -177,7 +174,7 @@ public class Grid {
             }
         }
     }
-    public void handleMatching() {//where to put it ??
+    public void labelMatchedFruits() {//where to put it ??
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
                 grid[x][y].matchesY = getVerticalLineLength(x, y);
@@ -195,40 +192,79 @@ public class Grid {
             for (int y = 0; y < 10; y++) {
                 if (grid[x][y].is_matched) {
                     grid[x][y].imageIndex = -1;
+                    //grid[x][y].animationState = AnimState.READY;
                 }
             }
         }
     }
-    public void handleFalling(int x, int y) {
-        if (grid[x][y+1].imageIndex == -1) {
+    public void labelFallingFruits() {
+        //sets animation state to falling for each fruit that has empty space below
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 9; y++) {
+                if (grid[x][y+1].imageIndex == -1 && grid[x][y].imageIndex != -1) {
+                    //if this is an unempty fruit above an empty place
+                    grid[x][y].animationState = AnimState.FALLING;
+                }
+            }
+        }
 
+    }
+    public void finishFallingAnimations() {
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 9; y++) {
+                if (grid[x][y].animationState == AnimState.FALLEN) {
+                    //reset position of a fallen fruit
+                    grid[x][y].x = gridToScreenX(x);
+                    grid[x][y].y = gridToScreenX(y);
+                    //quickly swap fallen fruit with an empty space belowy
+                    grid[x][y+1].imageIndex = grid[x][y].imageIndex;
+                    grid[x][y].imageIndex = -1;
+                    // set state to ready
+                    grid[x][y].animationState = AnimState.READY;
+                }
+            }
+        }
+    }
+    public void beginFallingAnimation() {
+        for (int x=0; x<10; x++) {
+            for (int y=0; y<10; y++) {
+                if (grid[x][y].animationState == AnimState.FALLING && !grid[x][y].isAnimated) {
+                    grid[x][y].isAnimated = true;
+                    grid[x][y].nextX = grid[x][y].x;
+                    grid[x][y].nextY = grid[x][y].y + SLOT_SPAN;
+                }
+            }
         }
     }
     public void handleSwappedFruits() {
-        if (grid[sel1x][sel1y].animationState == "SWAPPED"&& grid[sel2x][sel2y].animationState == "SWAPPED") {
+        if (grid[sel1x][sel1y].animationState == AnimState.SWAPPED
+                && grid[sel2x][sel2y].animationState == AnimState.SWAPPED) {
             //After the fruits are swapped for the fist time
-            handleMatching();//checks matches for each fruit
+            labelMatchedFruits();//checks matches for each fruit
             if (grid[sel1x][sel1y].is_matched || grid[sel2x][sel2y].is_matched) {//if matched
-                grid[sel1x][sel1y].animationState = "READY";
-                grid[sel2x][sel2y].animationState = "READY";
-                //explodeMatchedFruits();//todo: uncomment
+                grid[sel1x][sel1y].animationState = AnimState.READY;
+                grid[sel2x][sel2y].animationState = AnimState.READY;
+                explodeMatchedFruits();//todo: uncomment
                 unselectAllFruits();
+                labelFallingFruits();
+                beginFallingAnimation();
                 //now the program is ready for selecting new fruits
             } else {
                 swapSelectedFruits();//start reswapping
-                grid[sel1x][sel1y].animationState = "RESWAPPED";
-                grid[sel2x][sel2y].animationState = "RESWAPPED";
+                grid[sel1x][sel1y].animationState = AnimState.RESWAPPED;
+                grid[sel2x][sel2y].animationState = AnimState.RESWAPPED;
                 //Reswapping that starts here, ends in updateAnimation function
                 //when fruits reach desired positions
             }
-        } else if (grid[sel1x][sel1y].animationState == "RESWAPPED") {
+        } else if (grid[sel1x][sel1y].animationState == AnimState.RESWAPPED) {
             //disables reswapping after reswapping
-            grid[sel1x][sel1y].animationState = "READY";
-            grid[sel2x][sel2y].animationState = "READY";
+            grid[sel1x][sel1y].animationState = AnimState.READY;
+            grid[sel2x][sel2y].animationState = AnimState.READY;
             unselectAllFruits();
         }
     }
     public void updateAnimation(int timer_step) {
+        //actually, it updates everything
         boolean isAnyAnimated = false;
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
@@ -241,7 +277,12 @@ public class Grid {
         if (numSelectedFruits() == 2 && isAnyAnimated==false) {
             //if animation is not running, but fruits are still selected
             handleSwappedFruits();
+        } else if (numSelectedFruits() == 0) {
+            labelFallingFruits();
         }
+        //handle fallen fruits
+        finishFallingAnimations();
+        //if no fruits are selected, but are ready to fall - begin falling
     }
     public void paintGrid(Graphics g) {
         for (int x = 0; x < 10; x++) {
@@ -254,7 +295,11 @@ public class Grid {
                 if (grid[x][y].is_matched) {
                     g.setColor(Color.black);
                     //match indication for testing purposes
-                    g.fillOval(gridToScreenX(x)+14, gridToScreenY(y)+14, SLOT_SPAN/4, SLOT_SPAN/4);
+                    g.fillOval(gridToScreenX(x)+13, gridToScreenY(y)+14, SLOT_SPAN/4, SLOT_SPAN/4);
+                }
+                if (grid[x][y].animationState == AnimState.FALLING) {
+                    g.setColor(Color.pink);
+                    g.fillOval(gridToScreenX(x)+16, gridToScreenY(y)+14, SLOT_SPAN/4, SLOT_SPAN/4);
                 }
             }
         }
