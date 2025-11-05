@@ -212,7 +212,7 @@ public class Grid {
                 if (grid[sel1x][sel1y].is_matched || grid[sel2x][sel2y].is_matched) {//if matched
                     grid[sel1x][sel1y].animationState = AnimState.READY;
                     grid[sel2x][sel2y].animationState = AnimState.READY;
-                    explodeMatchedFruits();//todo: uncomment
+                    explodeMatchedFruits();
                     unselectAllFruits();
                     labelFallingFruits();
                     beginFallingAnimation();
