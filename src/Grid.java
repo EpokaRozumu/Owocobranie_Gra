@@ -249,25 +249,30 @@ public class Grid {
                     if (grid[x][y+1].imageIndex == -1 && grid[x][y].imageIndex != -1) {
                         //if this is an unempty fruit above an empty place
                         grid[x][y].animationState = AnimState.FALLING;
+                        //todo:all fruits above it should also fall
+//                        for (int y2 = 0; y2 < y; y2++) {
+//                            grid[x][y2].animationState = AnimState.FALLING;
+//                        }
                     }
                 }
             }
 
         }
-        public void finishFallingAnimations() {//ta funkcja wogóle nie jest wywoływana, a mimo to pojawiają się cytryny?
-            for (int x = 0; x < 10; x++) {
-                for (int y = 0; y < 9; y++) {
-                    if (grid[x][y].animationState == AnimState.FALLEN) {
-                        //reset position of a fallen fruit
-                        grid[x][y].x -= SLOT_SPAN;//= gridToScreenX(x);
-                        grid[x][y].y -= SLOT_SPAN;//gridToScreenX(y);
-                        //todo AAAAAA dlaczego cytryny na górze, a nie ten owoc na dole???
-                        //todo i dlaczego nie robi się nigdy READY??
-                        //quickly swap fallen fruit with an empty space belowy
-                        //grid[x][y+1].imageIndex = grid[x][y].imageIndex;
+        public void finishFallingAnimations() {
+            for (int x=0; x<10; x++) {
+                for (int y=0; y<10; y++) {
+                    if (grid[x][y].animationState ==AnimState.FALLEN) {
+                        System.out.println(x + " " + y);
+                        //first-swap values
+                        int placeholder;
+                        placeholder = grid[x][y+1].imageIndex;
+                        grid[x][y+1].imageIndex = grid[x][y].imageIndex;
 
-                        //grid[x][y].imageIndex = -1;
-                        // set state to ready
+                        grid[x][y].imageIndex = placeholder;
+                        //then reset above slot to previous position
+                        grid[x][y].y -= SLOT_SPAN;
+                        grid[x][y].isAnimated = false;
+                        grid[x][y].nextY = grid[x][y].y;
                         grid[x][y].animationState = AnimState.READY;
                     }
                 }
@@ -305,21 +310,9 @@ public class Grid {
             finishSwapping();
         }
         if (animationState==AnimState.FALLEN) {
-            for (int x=0; x<10; x++) {
-                for (int y=0; y<10; y++) {
-                    if (grid[x][y].animationState ==AnimState.FALLEN) {
-                        System.out.println(x + " " + y);
-                        //first-swap values
-                        grid[x][y+1].imageIndex = grid[x][y].imageIndex;
-                        grid[x][y].imageIndex = -1;
-                        //then reset above slot to previous position
-                        grid[x][y].y -= SLOT_SPAN;
-                        grid[x][y].isAnimated = false;
-                        grid[x][y].nextY = grid[x][y].y;
-                        grid[x][y].animationState = AnimState.READY;
-                    }
-                }
-            }
+            finishFallingAnimations();
+            labelFallingFruits();
+            beginFallingAnimation();
         }
 
 
