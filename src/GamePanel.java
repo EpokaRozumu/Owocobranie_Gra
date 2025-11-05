@@ -17,7 +17,7 @@ class GamePanel extends JPanel {
     final int TIMER_SPEED = 100;
     int secondsPassed = 0;
     Font largeFont= new Font("Comic Sans MS", Font.BOLD, 50);
-    Font smallFont;
+    Font smallFont = new Font("Comic Sans MS",Font.BOLD,8);
     Timer timer;
     public GamePanel() {
         setBorder(BorderFactory.createLineBorder(Color.black));
@@ -37,7 +37,7 @@ class GamePanel extends JPanel {
         Timer timer = new Timer(TIMER_SPEED,new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 secondsPassed++;
-                grid.updateAnimation(TIMER_SPEED);
+                grid.update(TIMER_SPEED);
                 //grid.labelMatchedFruits();deleting this may break the game?
                 //redSquare.updateAnimation(TIMER_SPEED);
                 repaint();
@@ -52,7 +52,9 @@ class GamePanel extends JPanel {
         g.setFont(largeFont);
         g.drawString("Owocobranie", 200, 55);//may replace this with image of a title
         g.drawString(secondsPassed + "", 20, 50);
+        g.drawString(String.valueOf(grid.animationState), 20, 300);
         redSquare.paintSquare(g);
+        g.setFont(smallFont);
         grid.paintGrid(g);
     }
     public Dimension getPreferredSize() {
