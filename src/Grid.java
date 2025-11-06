@@ -240,6 +240,8 @@ public class Grid {
                     }
                 }
             }
+            //in case upper fruits were destroyed
+            spawnNewFruits();
         }
     //falling functions
         public void labelFallingFruits() {
@@ -294,6 +296,14 @@ public class Grid {
                 }
             }
         }
+    //spawning new fruits
+        public void spawnNewFruits() {
+            for (int x=0; x<10; x++) {
+                if (grid[x][0].imageIndex == -1) {
+                    grid[x][0] = new Owoc(gridToScreenX(x), gridToScreenY(0));
+                }
+            }
+        }
     //important functions
     public void update(int timer_step) {
         boolean isAnyAnimated = false;
@@ -315,7 +325,8 @@ public class Grid {
             finishSwapping();
         }
         if (animationState==AnimState.FALLEN) {
-            finishFallingAnimations();
+            finishFallingAnimations();//todo: make animation smoother (optional) - because now fruit wait a little after each falling step
+            spawnNewFruits();
             labelFallingFruits();
             beginFallingAnimation();
             //if no new fruits are falling
