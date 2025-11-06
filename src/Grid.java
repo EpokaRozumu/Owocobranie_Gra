@@ -318,6 +318,7 @@ public class Grid {
             finishFallingAnimations();
             labelFallingFruits();
             beginFallingAnimation();
+
         }
 
 

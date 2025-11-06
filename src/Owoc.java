@@ -9,7 +9,7 @@ public class Owoc {
     static String[] gatunki = {"cytryna", "pomarancza","truskawka","wisnia","winogrono"};
     static String[] imagePaths = {"cytryna.bmp","pomarancza.bmp","arbuz.bmp","wisnia.bmp","winogrono.bmp"};
     static BufferedImage[] images = new BufferedImage[gatunki.length];
-
+    static final int BASE_SPEED = 10;
     static final int ANIMATION_DURATION = 500;
 
     int x;
@@ -20,6 +20,7 @@ public class Owoc {
     boolean is_matched = false;
 
     boolean isAnimated;
+    double relative_speed = 1.0;
 
     AnimState animationState;
     int nextX;//for animation purposes
@@ -40,6 +41,7 @@ public class Owoc {
         this.prevX = x;
         this.prevY = y;
         this.animationState = AnimState.READY;
+        this.relative_speed = 1;
         //wylosuj typ owocu
         int randomNum = (int)(Math.random() * (gatunki.length));
         this.imageIndex = randomNum;
@@ -78,11 +80,18 @@ public class Owoc {
     public void updateAnimation(int timer_step) {
         //This function is called by Grid's update animation
         //which is called repeatadly by the Swing timer
-        final int SPEED = 10;
+
         double dx = nextX - x;
         double dy = nextY - y;
         double distance = Math.sqrt(dx*dx + dy*dy);//distance to destination
-        if (distance < SPEED) {
+
+        if (this.animationState == AnimState.SWAPPING) {
+            relative_speed = 0.5;//swapping should be slower than falling
+        } else {
+            relative_speed = 1.0;
+        }
+
+        if (distance < BASE_SPEED*relative_speed) {
             if (animationState == AnimState.FALLING) {
                 finishFalling();
             } else {
@@ -94,8 +103,8 @@ public class Owoc {
             //którego zapomniałam
 
             //move at constant speed towards destination
-            dx = SPEED * dx / distance;
-            dy = SPEED * dy / distance;
+            dx = BASE_SPEED*relative_speed * dx / distance;
+            dy = BASE_SPEED*relative_speed * dy / distance;
             x += dx;
             y += dy;
             isAnimated = true;
