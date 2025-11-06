@@ -14,7 +14,7 @@ import java.io.IOException;
 class GamePanel extends JPanel {
     RedSquare redSquare = new RedSquare();
     Grid grid = new Grid();
-    final int TIMER_SPEED = 100;
+    final int TIMER_SPEED = 50;//ms
     int secondsPassed = 0;
     Font largeFont= new Font("Comic Sans MS", Font.BOLD, 50);
     Font smallFont = new Font("Comic Sans MS",Font.BOLD,8);
@@ -38,8 +38,6 @@ class GamePanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 secondsPassed++;
                 grid.update(TIMER_SPEED);
-                //grid.labelMatchedFruits();deleting this may break the game?
-                //redSquare.updateAnimation(TIMER_SPEED);
                 repaint();
             }
         });
@@ -52,7 +50,7 @@ class GamePanel extends JPanel {
         g.setFont(largeFont);
         g.drawString("Owocobranie", 200, 55);//may replace this with image of a title
         g.drawString(secondsPassed + "", 20, 50);
-        g.drawString(String.valueOf(grid.animationState), 20, 300);
+        g.drawString(String.valueOf(grid.animationState), 20, 600);
         redSquare.paintSquare(g);
         g.setFont(smallFont);
         grid.paintGrid(g);

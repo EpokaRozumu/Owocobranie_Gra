@@ -249,10 +249,14 @@ public class Grid {
                     if (grid[x][y+1].imageIndex == -1 && grid[x][y].imageIndex != -1) {
                         //if this is an unempty fruit above an empty place
                         grid[x][y].animationState = AnimState.FALLING;
-                        //todo:all fruits above it should also fall
-//                        for (int y2 = 0; y2 < y; y2++) {
-//                            grid[x][y2].animationState = AnimState.FALLING;
-//                        }
+                        for (int y2 = 0; y2 < y; y2++) {
+                              //todo:all fruits above it should also fall
+                            //not working when another fruit is falling exacly two spaces above or below
+                            if (grid[x][y2].animationState ==AnimState.READY) {
+                                grid[x][y2].animationState = AnimState.FALLING;
+
+                            }
+                        }
                     }
                 }
             }
@@ -260,7 +264,8 @@ public class Grid {
         }
         public void finishFallingAnimations() {
             for (int x=0; x<10; x++) {
-                for (int y=0; y<10; y++) {
+                for (int y=9; y>=0; y--) {
+                    //begin at the bottom and go up
                     if (grid[x][y].animationState ==AnimState.FALLEN) {
                         System.out.println(x + " " + y);
                         //first-swap values
