@@ -318,6 +318,15 @@ public class Grid {
             finishFallingAnimations();
             labelFallingFruits();
             beginFallingAnimation();
+            //if no new fruits are falling
+            animationState = getAnimationState();
+            if (animationState==AnimState.READY) {
+                labelMatchedFruits();
+                explodeMatchedFruits();
+                labelFallingFruits();
+                beginFallingAnimation();
+                //will it work two times in a row?
+            }
 
         }
 
