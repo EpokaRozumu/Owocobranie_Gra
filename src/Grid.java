@@ -15,11 +15,14 @@ public class Grid {
     static final int GRID_OFFSET_Y = 100;
 
     AnimState animationState;
+    ParticleSource particleSource;
 
     Owoc[][] grid = new Owoc[10][10];
 
+
     public Grid() {
         Owoc.loadImages();
+        particleSource = new ParticleSource(50,50);
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
                 grid[x][y] = new Owoc(gridToScreenX(x), gridToScreenY(y));
@@ -308,6 +311,7 @@ public class Grid {
         }
     //important functions
     public void update(int timer_step) {
+        particleSource.update();
         boolean isAnyAnimated = false;
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
@@ -352,6 +356,7 @@ public class Grid {
         g.drawString(x + "," + y, grid[x][y].x, grid[x][y].y);
     }
     public void paintGrid(Graphics g) {
+        particleSource.draw(g);
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
                 grid[x][y].paintOwoc(g);
