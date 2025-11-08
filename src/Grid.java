@@ -83,7 +83,7 @@ public class Grid {
             int length = 1;
             //search upwards
             if (fruit_y > 0) {//if not in top row
-                for (int y = fruit_y-1; y >= 0; y--) {
+                for (int y = fruit_y-1; y >= 1; y--) {//dont search the top row
                     if (grid[fruit_x][y].imageIndex == grid[fruit_x][fruit_y].imageIndex) {
                         length++;
                     } else {
@@ -131,7 +131,7 @@ public class Grid {
         }
         public void labelMatchedFruits() {//where to put it ??
             for (int x = 0; x < 10; x++) {
-                for (int y = 0; y < 10; y++) {
+                for (int y = 1; y < 10; y++) {//dont check for the first row
                     grid[x][y].matchesY = getVerticalLineLength(x, y);
                     grid[x][y].matchesX = getHorizontalLineLength(x, y);
                     if (grid[x][y].matchesX>=3 || grid[x][y].matchesY>=3) {
