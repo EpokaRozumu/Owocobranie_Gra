@@ -81,7 +81,6 @@ public class Grid {
             sel2y = -1;
         }
     //functions for finding matched fruits
-    //todo: exclude the first row
         private int getVerticalLineLength(int fruit_x, int fruit_y) {
             int length = 1;
             //search upwards
@@ -182,9 +181,11 @@ public class Grid {
         public void handleSwapping(MouseEvent e) {
             int mx = e.getX();
             int my = e.getY();
-            if ( GRID_OFFSET_X <mx && mx <GRID_OFFSET_X+10*SLOT_SPAN
-                    && GRID_OFFSET_Y+SLOT_SPAN < my && my <GRID_OFFSET_Y+10*SLOT_SPAN) {
-                //                      ^ fruits in top row are untouchable
+            animationState = getAnimationState();
+            boolean mxInGrid = GRID_OFFSET_X <mx && mx <GRID_OFFSET_X+10*SLOT_SPAN;
+            boolean myInGrid = GRID_OFFSET_Y+SLOT_SPAN < my && my <GRID_OFFSET_Y+10*SLOT_SPAN;
+            //                                 ^ fruits in top row are untouchable
+            if (mxInGrid && myInGrid && animationState == AnimState.READY) {
                 //handle selecting fruits
                 if (numSelectedFruits() == 0) {
                     sel1x = screenToGridX(mx);
