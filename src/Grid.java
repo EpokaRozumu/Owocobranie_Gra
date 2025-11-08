@@ -78,6 +78,7 @@ public class Grid {
             sel2y = -1;
         }
     //functions for finding matched fruits
+    //todo: exclude the first row
         private int getVerticalLineLength(int fruit_x, int fruit_y) {
             int length = 1;
             //search upwards
@@ -179,7 +180,8 @@ public class Grid {
             int mx = e.getX();
             int my = e.getY();
             if ( GRID_OFFSET_X <mx && mx <GRID_OFFSET_X+10*SLOT_SPAN
-                    && GRID_OFFSET_Y < my && my <GRID_OFFSET_Y+10*SLOT_SPAN) {
+                    && GRID_OFFSET_Y+SLOT_SPAN < my && my <GRID_OFFSET_Y+10*SLOT_SPAN) {
+                //                      ^ fruits in top row are untouchable
                 //handle selecting fruits
                 if (numSelectedFruits() == 0) {
                     sel1x = screenToGridX(mx);
@@ -310,11 +312,7 @@ public class Grid {
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
                 if (grid[x][y].isAnimated) {
-                    if(grid[x][y].animationState == AnimState.FALLING) {
-                        //breakpoint
-                        x=x;
-                    }
-                    grid[x][y].updateAnimation(timer_step);//to przez to są cytryny???
+                    grid[x][y].updateAnimation(timer_step);
                     isAnyAnimated = true;
                 }
             }
@@ -325,7 +323,7 @@ public class Grid {
             finishSwapping();
         }
         if (animationState==AnimState.FALLEN) {
-            finishFallingAnimations();//todo: make animation smoother (optional) - because now fruit wait a little after each falling step
+            finishFallingAnimations();//make animation smoother (optional) - because now fruit wait a little after each falling step
             spawnNewFruits();
             labelFallingFruits();
             beginFallingAnimation();
@@ -338,11 +336,20 @@ public class Grid {
                 beginFallingAnimation();
                 //will it work two times in a row?
             }
-
         }
-
-
         labelMatchedFruits();
+    }
+    public void displayFruitDebugInfo(int x, int y, Graphics g) {//for debugging
+        //                if (grid[x][y].is_matched) {
+//                    g.setColor(Color.black);
+//                    //match indication for testing purposes
+//                    g.fillOval(gridToScreenX(x)+13, gridToScreenY(y)+14, SLOT_SPAN/4, SLOT_SPAN/4);
+//                }
+//                if (grid[x][y].animationState == AnimState.FALLING) {
+//                    g.setColor(Color.pink);
+//                    g.fillOval(gridToScreenX(x)+16, gridToScreenY(y)+14, SLOT_SPAN/4, SLOT_SPAN/4);
+//                }
+        g.drawString(x + "," + y, grid[x][y].x, grid[x][y].y);
     }
     public void paintGrid(Graphics g) {
         for (int x = 0; x < 10; x++) {
@@ -352,17 +359,10 @@ public class Grid {
                     g.setColor(Color.black);
                     g.drawRect(gridToScreenX(x), gridToScreenY(y), SLOT_SPAN, SLOT_SPAN);
                 }
-//                if (grid[x][y].is_matched) {
-//                    g.setColor(Color.black);
-//                    //match indication for testing purposes
-//                    g.fillOval(gridToScreenX(x)+13, gridToScreenY(y)+14, SLOT_SPAN/4, SLOT_SPAN/4);
-//                }
-//                if (grid[x][y].animationState == AnimState.FALLING) {
-//                    g.setColor(Color.pink);
-//                    g.fillOval(gridToScreenX(x)+16, gridToScreenY(y)+14, SLOT_SPAN/4, SLOT_SPAN/4);
-//                }
-                g.drawString(x + "," + y, grid[x][y].x, grid[x][y].y);
+                //displayFruitDebugInfo(x,y,g);
             }
         }
+        g.setColor(Color.decode("0xEEEEEE"));
+        g.fillRect(gridToScreenX(0),gridToScreenY(0),SLOT_SPAN*10,SLOT_SPAN);
     }
 }

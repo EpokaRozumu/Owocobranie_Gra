@@ -14,7 +14,7 @@ import java.io.IOException;
 class GamePanel extends JPanel {
     RedSquare redSquare = new RedSquare();
     Grid grid = new Grid();
-    final int TIMER_SPEED = 30;//ms
+    final int TIMER_SPEED = 30;//best - 30ms
     int secondsPassed = 0;
     Font largeFont= new Font("Comic Sans MS", Font.BOLD, 50);
     Font smallFont = new Font("Comic Sans MS",Font.BOLD,8);
@@ -49,10 +49,10 @@ class GamePanel extends JPanel {
         super.paintComponent(g);
         g.setFont(largeFont);
         g.drawString("Owocobranie", 200, 55);//may replace this with image of a title
-        g.drawString(secondsPassed + "", 20, 50);
+
         g.drawString(String.valueOf(grid.animationState), 20, 600);
-        redSquare.paintSquare(g);
         g.setFont(smallFont);
+        g.drawString(secondsPassed + "", 20, 50);
         grid.paintGrid(g);
     }
     public Dimension getPreferredSize() {

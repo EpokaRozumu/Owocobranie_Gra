@@ -85,14 +85,15 @@ public class Owoc {
         double dy = nextY - y;
         double distance = Math.sqrt(dx*dx + dy*dy);//distance to destination
 
-        if (this.animationState == AnimState.SWAPPING) {
+        if (this.animationState == AnimState.SWAPPING || this.animationState == AnimState.RESWAPPING) {
             relative_speed = 0.5;//swapping should be slower than falling
+            //todo: for some reason reswapping is still as fast as falling...
         } else {
             relative_speed = 1.0;
         }
 
         if (distance < BASE_SPEED*relative_speed) {
-            if (animationState == AnimState.FALLING) {
+            if (animationState == AnimState.FALLING ) {
                 finishFalling();
             } else {
                 finishSwapping();
