@@ -14,10 +14,10 @@ import java.io.IOException;
 class GamePanel extends JPanel {
     RedSquare redSquare = new RedSquare();
     Grid grid = new Grid();
-    final int TIMER_SPEED = 30;//best - 30ms
+    final int TIMER_SPEED = 30;//best - 30ms\
     int secondsPassed = 0;
     Font largeFont= new Font("Comic Sans MS", Font.BOLD, 50);
-    Font smallFont = new Font("Comic Sans MS",Font.BOLD,8);
+    Font smallFont = new Font("Comic Sans MS",Font.BOLD,12);
     Timer timer;
     public GamePanel() {
         setBorder(BorderFactory.createLineBorder(Color.black));
@@ -44,15 +44,22 @@ class GamePanel extends JPanel {
         timer.start();
     }
     //all custom painting here
+    public void displayDebugInfo(Graphics g) {
+        g.drawString(String.valueOf(grid.animationState), 20, 600);
+        g.setFont(smallFont);
+        g.drawString(secondsPassed + "", 20, 50);
+        g.drawString("ZEBRANE OWOCE:", 20, 170);
+        for (int i=0; i<Owoc.gatunki.length; i++) {
+            g.drawString(Owoc.gatunki[i] + " " +Owoc.collectedFruits.get(Owoc.gatunki[i]), 20, 200+30*i);
+        }
+    }
     public void paintComponent(Graphics g) {
         //g will actually be Graphics2d
         super.paintComponent(g);
         g.setFont(largeFont);
         g.drawString("Owocobranie", 200, 55);//may replace this with image of a title
 
-        g.drawString(String.valueOf(grid.animationState), 20, 600);
-        g.setFont(smallFont);
-        g.drawString(secondsPassed + "", 20, 50);
+        displayDebugInfo(g);
         grid.paintGrid(g);
     }
     public Dimension getPreferredSize() {

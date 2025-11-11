@@ -240,7 +240,8 @@ public class Grid {
         public void explodeMatchedFruits() {
             for (int x = 0; x < 10; x++) {
                 for (int y = 0; y < 10; y++) {
-                    if (grid[x][y].is_matched) {
+                    if (grid[x][y].is_matched && grid[x][y].imageIndex > -1) {
+                        grid[x][y].collect();
                         grid[x][y].imageIndex = -1;
                         //grid[x][y].animationState = AnimState.READY;
                     }
@@ -344,7 +345,8 @@ public class Grid {
         }
         labelMatchedFruits();
     }
-    public void displayFruitDebugInfo(int x, int y, Graphics g) {//for debugging
+    public void displayFruitDebugInfo(int x, int y, Graphics g) {
+        //for debugging
         //                if (grid[x][y].is_matched) {
 //                    g.setColor(Color.black);
 //                    //match indication for testing purposes
