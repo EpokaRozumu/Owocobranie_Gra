@@ -3,16 +3,19 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Owoc {
 
-    static String[] gatunki = {"cytryna", "pomarancza","arbuz","wisnia","winogrono"};
-    static String[] imagePaths = {"cytryna.bmp","pomarancza.bmp","arbuz.bmp","wisnia.bmp","winogrono.bmp"};
-
+    static final String[] gatunki = {"cytryna", "pomarancza","arbuz","wisnia","winogrono"};
+    static final String[] fruitImagePaths = {"cytryna.bmp","pomarancza.bmp","arbuz.bmp","wisnia.bmp","winogrono.bmp"};
+    static final String[] specials = {"horizontal", "vertical", "flower","bomb"};
+    static final String[] specialPaths = {"horizontal_tag.png", "vertical_tag.png", "flower_tag.png", "bomb_tag.png"};
     static HashMap<String,Integer> collectedFruits = new HashMap<String, Integer>();
 
     static BufferedImage[] images = new BufferedImage[gatunki.length];
+    static BufferedImage[] specialImages = new BufferedImage[specials.length];
     static final int BASE_SPEED = 10;
     static final int ANIMATION_DURATION = 500;
 
@@ -35,6 +38,7 @@ public class Owoc {
     int prevY;
 
     String gatunek;
+    String special;
     int imageIndex = 0;//-1 if this fruit was exploded
     //image index is useful, because it takes less space if fruits hold only their type, and not a whole image
     //I hope it will make this program faster?
@@ -48,12 +52,15 @@ public class Owoc {
         this.prevY = y;
         this.animationState = AnimState.READY;
         this.relative_speed = 1;
+        this.special = "none";
         //this.explosion = new ParticleSource(x,y);
         //wylosuj typ owocu
         int randomNum = (int)(Math.random() * (gatunki.length));
         this.imageIndex = randomNum;
         this.gatunek = gatunki[randomNum];
-
+//        if (this.gatunek == "cytryna" ) {
+//            this.special = "bomb";
+//        }
         //how to avoind repetion??
         if (collectedFruits.isEmpty()) {
             for (String gatunek : gatunki) {
@@ -61,14 +68,29 @@ public class Owoc {
             }
         }
     }
-    public static void loadImages() {
+    public static int getSpecialIndex(String a) {
+        for (int i = 0; i < specials.length; i++) {
+            if (specials[i].equals(a)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    public static void loadImages()  {
         for (int i = 0; i < gatunki.length; i++) {
             try {
-                images[i] = ImageIO.read(new File(imagePaths[i]));
+                images[i] = ImageIO.read(new File(fruitImagePaths[i]));
             } catch (IOException e) {
-                System.out.println("Error loading image "+imagePaths[i]);
+                System.out.println("Error loading image "+ fruitImagePaths[i]);
                 //throw new RuntimeException(e);
-
+            }
+        }
+        for (int i=0; i<specials.length; i++) {
+            try {
+                specialImages[i] = ImageIO.read(new File(specialPaths[i]));
+            } catch (IOException e) {
+                System.out.println("Error loading image "+ specialPaths[i]);
+                //throw new RuntimeException(e);
             }
         }
 
@@ -134,6 +156,10 @@ public class Owoc {
         int r = 35;
         if (imageIndex > -1) {
             g.drawImage(images[imageIndex],x-2,y-2,40,40,null);
+            int specialIndex = getSpecialIndex(special);
+            if (specialIndex > -1) {
+                g.drawImage(specialImages[specialIndex],x+10,y+10,16,16,null);
+            }
         }
     }
 }

@@ -131,6 +131,13 @@ public class Grid {
 
             return length;
         }
+        public String returnSpecial(int vertical_line, int horizontal_line) {
+            if (vertical_line >= 3 && horizontal_line >= 3) {
+                return "bomb";
+            } else {
+                return  "none";
+            }
+        }
         public void labelMatchedFruits() {//where to put it ??
             for (int x = 0; x < 10; x++) {
                 for (int y = 1; y < 10; y++) {//dont check for the first row
@@ -241,9 +248,14 @@ public class Grid {
             for (int x = 0; x < 10; x++) {
                 for (int y = 0; y < 10; y++) {
                     if (grid[x][y].is_matched && grid[x][y].imageIndex > -1) {
+                        //grid[x][y].special = returnSpecial(getVerticalLineLength(x,y),getHorizontalLineLength(x,y));
+                        if (grid[x][y].matchesX >= 3 && grid[x][y].matchesY >= 3) {
+                            grid[x][y].special = "bomb";
+                        }
                         grid[x][y].collect();
-                        grid[x][y].imageIndex = -1;
-                        //grid[x][y].animationState = AnimState.READY;
+                        if (grid[x][y].special == "none") {
+                            grid[x][y].imageIndex = -1;
+                        }
                     }
                 }
             }
@@ -277,12 +289,15 @@ public class Grid {
                     //begin at the bottom and go up
                     if (grid[x][y].animationState ==AnimState.FALLEN) {
                         System.out.println(x + " " + y);
+                        //todo: add function to swap values
                         //first-swap values
                         int placeholder;
                         placeholder = grid[x][y+1].imageIndex;
                         grid[x][y+1].imageIndex = grid[x][y].imageIndex;
-
                         grid[x][y].imageIndex = placeholder;
+                        String another = grid[x][y+1].special;
+                        grid[x][y+1].special = grid[x][y].special;
+                        grid[x][y].special = another;
                         //then reset above slot to previous position
                         grid[x][y].y -= SLOT_SPAN;
                         grid[x][y].isAnimated = false;
