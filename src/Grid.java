@@ -81,54 +81,68 @@ public class Grid {
             sel2y = -1;
         }
     //functions for finding matched fruits
-        private int getVerticalLineLength(int fruit_x, int fruit_y) {
-            int length = 1;
-            //search upwards
+        private int sameFruitsAbove(int fruit_x, int fruit_y) {
+            int l = 0;
             if (fruit_y > 0) {//if not in top row
                 for (int y = fruit_y-1; y >= 1; y--) {//dont search the top row
                     if (grid[fruit_x][y].imageIndex == grid[fruit_x][fruit_y].imageIndex) {
-                        length++;
+                        l++;
                     } else {
                         break;
                     }
                 }
             }
-            //search downwards
+            return l;
+        }
+        private int sameFruitsBelow(int fruit_x, int fruit_y) {
+        int l = 0;
             if (fruit_x <= (grid[0].length-1)) {//if not in bottom row
                 for (int y = fruit_y+1; y < grid[0].length; y++) {
                     if (grid[fruit_x][y].imageIndex == grid[fruit_x][fruit_y].imageIndex) {
-                        length++;
+                        l++;
                     } else {
                         break;
                     }
                 }
             }
-
+            return l;
+        }
+        private int sameFruitsOnLeft(int fruit_x, int fruit_y) {
+        int l = 0;
+            if (fruit_x > 0) {//if not in  leftmost row
+                for (int x = fruit_x-1; x >= 0; x--) {
+                    if (grid[x][fruit_y].imageIndex == grid[fruit_x][fruit_y].imageIndex) {
+                        l++;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        return l;
+        }
+        private int sameFruitsOnRight(int fruit_x, int fruit_y) {
+        int l = 0;
+            if (fruit_x < (grid.length-1)) {//if not in rightmost row
+                for (int x = fruit_x+1; x < grid.length; x++) {
+                    if (grid[x][fruit_y].imageIndex == grid[fruit_x][fruit_y].imageIndex) {
+                        l++;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        return l;
+        }
+        private int getVerticalLineLength(int fruit_x, int fruit_y) {
+            int length = 1;
+            length += sameFruitsAbove(fruit_x,fruit_y);
+            length += sameFruitsBelow(fruit_x,fruit_y);
             return length;//
         }
         private int getHorizontalLineLength(int fruit_x, int fruit_y) {
             int length = 1;
-            //search to the left
-            if (fruit_x > 0) {//if not in  leftmost row
-                for (int x = fruit_x-1; x >= 0; x--) {
-                    if (grid[x][fruit_y].imageIndex == grid[fruit_x][fruit_y].imageIndex) {
-                        length++;
-                    } else {
-                        break;
-                    }
-                }
-            }
-            //search downwards
-            if (fruit_x < (grid.length-1)) {//if not in rightmost row
-                for (int x = fruit_x+1; x < grid.length; x++) {
-                    if (grid[x][fruit_y].imageIndex == grid[fruit_x][fruit_y].imageIndex) {
-                        length++;
-                    } else {
-                        break;
-                    }
-                }
-            }
-
+            length += sameFruitsOnLeft(fruit_x, fruit_y);
+            length += sameFruitsOnRight(fruit_x, fruit_y);
             return length;
         }
         public String returnSpecial(int vertical_line, int horizontal_line) {

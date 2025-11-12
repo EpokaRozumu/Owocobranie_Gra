@@ -1,0 +1,13 @@
+
+A palette made in p8:
+#008751 -dark green
+#00E436 - green
+#FFEC27 - yellow
+#FFCCAA - cream
+#FF9D81 - rose
+#FF6C24 - orange
+#FFA300 - gold
+#FF004D - red
+#BE1250 - cherry
+#7E2553 - plum
+#5F574F - gray
