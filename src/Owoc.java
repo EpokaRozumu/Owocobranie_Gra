@@ -113,8 +113,10 @@ public class Owoc {
         animationState = AnimState.FALLEN;
     }
     public void collect() {
-       gatunek = gatunki[imageIndex];
-       collectedFruits.replace(gatunek, collectedFruits.get(gatunek)+1) ;
+        if (imageIndex > -1) {
+            gatunek = gatunki[imageIndex];
+            collectedFruits.replace(gatunek, collectedFruits.get(gatunek)+1) ;
+        }
     }
 
     public void updateAnimation(int timer_step) {

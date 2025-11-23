@@ -157,6 +157,16 @@ public class Grid {
             }
         }
     //functions for swapping fruits
+        private void swapValues(int x1, int y1, int x2, int y2) {
+            //does not swap positions, only values
+            int placeholder;
+            placeholder = grid[x2][y2].imageIndex;
+            grid[x2][y2].imageIndex = grid[x1][y1].imageIndex;
+            grid[x1][y1].imageIndex = placeholder;
+            String another = grid[x2][y2].special;
+            grid[x2][y2].special = grid[x1][y1].special;
+            grid[x1][y1].special = another;
+        }
         private boolean selectedFruitsAreAdjacent() {
             if ((sel1x+1) == sel2x || (sel1x-1)==sel2x) {
                 if (sel1y==sel2y) {
@@ -227,7 +237,18 @@ public class Grid {
                     && grid[sel2x][sel2y].animationState == AnimState.SWAPPED) {
                 //After the fruits are swapped for the fist time
                 labelMatchedFruits();//checks matches for each fruit
-                if (grid[sel1x][sel1y].is_matched || grid[sel2x][sel2y].is_matched) {//if matched
+                if (grid[sel1x][sel1y].special == "flower") {//flower can swap with any fruit
+                    //remove if it breaks code
+                    explodeSpecial("flower", sel1x, sel1y);
+                    unselectAllFruits();
+                    labelFallingFruits();
+                    beginFallingAnimation();
+                } else if (grid[sel2x][sel2y].special == "flower") {
+                    explodeSpecial("flower", sel2x, sel2y);
+                    unselectAllFruits();
+                    labelFallingFruits();
+                    beginFallingAnimation();
+                }else if (grid[sel1x][sel1y].is_matched || grid[sel2x][sel2y].is_matched) {//if matched
                     grid[sel1x][sel1y].animationState = AnimState.READY;
                     grid[sel2x][sel2y].animationState = AnimState.READY;
                     explodeMatchedFruits();
@@ -250,10 +271,11 @@ public class Grid {
             }
         }
         public void assingnSpecial(int x, int y) {
-            if ((grid[x][y].matchesX >= 5 && sameFruitsOnRight(x,y) == 1)
-                    || grid[x][y].matchesY >= 5 && sameFruitsBelow(x,y) == 1) {
+            if ((grid[x][y].matchesX >= 5 && sameFruitsOnRight(x,y) == 2)
+                    || (grid[x][y].matchesY >= 5 && sameFruitsBelow(x,y) == 2)) {
                 grid[x][y].special = "flower";
             }
+            System.out.println(sameFruitsBelow(x,y));
             if (grid[x][y].matchesX >= 3 && grid[x][y].matchesY >= 3) {
                 grid[x][y].special = "bomb";
             } else if ((grid[x][y].matchesY >= 4) && sameFruitsBelow(x,y) == 3) {
@@ -262,8 +284,42 @@ public class Grid {
                 grid[x][y].special = "horizontal";
             }
         }
-        public void explodeSpecial(String name,int x, int y) {
+        public void explodeSpecial(String name,int special_x, int special_y) {
+            //problem: bombs exploded by bombs do not explode other fruits
+            //todo: make an explode single fruit function
+            switch (name) {
+                case "flower":
+                    for (int x=0;x<=9;x++) {
+                        for (int y=0;y<9;y++) {
+                            if (grid[x][y].imageIndex == grid[special_x][special_y].imageIndex) {
+                                grid[x][y].collect();
+                                grid[x][y].imageIndex = -1;
+                            }
+                        }
+                }
+                    case  "bomb":
+                    for (int x=special_x-1;x<=(special_x+1);x++) {
+                        for (int y=special_y-1;y<=(special_y+1);y++) {
+                            if (0<=x && x< 10 && 0<=y && y < 10) {
+                                grid[x][y].collect();
+                                grid[x][y].imageIndex = -1;
+                            }
 
+                        }
+                    }
+                    case "vertical":
+                        for (int y=0; y<=9; y++) {
+                            grid[special_x][y].collect();
+                            grid[special_x][y].imageIndex = -1;
+                        }
+
+                    case "horizontal":
+                        for (int x=0;x<=9;x++) {
+                            grid[x][special_y].collect();
+                            grid[x][special_y].imageIndex = -1;
+                        }
+
+            }
         }
         public void explodeMatchedFruits() {
             for (int x = 0; x < 10; x++) {
@@ -313,16 +369,10 @@ public class Grid {
                 for (int y=9; y>=0; y--) {
                     //begin at the bottom and go up
                     if (grid[x][y].animationState ==AnimState.FALLEN) {
-                        System.out.println(x + " " + y);
-                        //todo: add function to swap values
+                        //System.out.println(x + " " + y);
                         //first-swap values
+                        swapValues(x,y,x,y+1);
                         int placeholder;
-                        placeholder = grid[x][y+1].imageIndex;
-                        grid[x][y+1].imageIndex = grid[x][y].imageIndex;
-                        grid[x][y].imageIndex = placeholder;
-                        String another = grid[x][y+1].special;
-                        grid[x][y+1].special = grid[x][y].special;
-                        grid[x][y].special = another;
                         //then reset above slot to previous position
                         grid[x][y].y -= SLOT_SPAN;
                         grid[x][y].isAnimated = false;
