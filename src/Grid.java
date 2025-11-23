@@ -50,6 +50,7 @@ public class Grid {
             return (int)(y - GRID_OFFSET_Y)/SLOT_SPAN;
         }
         public AnimState getAnimationState() {
+        //gets animation state of all grid
         //ready, falling, fallen, swapping,swapped;
          for (int x=0; x<10; x++) {
              for (int y=0; y<10; y++) {
@@ -237,24 +238,13 @@ public class Grid {
                     && grid[sel2x][sel2y].animationState == AnimState.SWAPPED) {
                 //After the fruits are swapped for the fist time
                 labelMatchedFruits();//checks matches for each fruit
-                if (grid[sel1x][sel1y].special == "flower") {//flower can swap with any fruit
-                    //remove if it breaks code
-                    explodeSpecial("flower", sel1x, sel1y);
-                    unselectAllFruits();
-                    labelFallingFruits();
-                    beginFallingAnimation();
-                } else if (grid[sel2x][sel2y].special == "flower") {
-                    explodeSpecial("flower", sel2x, sel2y);
-                    unselectAllFruits();
-                    labelFallingFruits();
-                    beginFallingAnimation();
-                }else if (grid[sel1x][sel1y].is_matched || grid[sel2x][sel2y].is_matched) {//if matched
+                if (grid[sel1x][sel1y].is_matched || grid[sel2x][sel2y].is_matched) {//if matched
                     grid[sel1x][sel1y].animationState = AnimState.READY;
                     grid[sel2x][sel2y].animationState = AnimState.READY;
-                    explodeMatchedFruits();
+                    beginExplodingAnimation();
                     unselectAllFruits();
-                    labelFallingFruits();
-                    beginFallingAnimation();
+                    //labelFallingFruits();
+                    //beginFallingAnimation();
                     //now the program is ready for selecting new fruits
                 } else {
                     swapSelectedFruits();//start reswapping
@@ -275,7 +265,7 @@ public class Grid {
                     || (grid[x][y].matchesY >= 5 && sameFruitsBelow(x,y) == 2)) {
                 grid[x][y].special = "flower";
             }
-            System.out.println(sameFruitsBelow(x,y));
+            //System.out.println(sameFruitsBelow(x,y));
             if (grid[x][y].matchesX >= 3 && grid[x][y].matchesY >= 3) {
                 grid[x][y].special = "bomb";
             } else if ((grid[x][y].matchesY >= 4) && sameFruitsBelow(x,y) == 3) {
@@ -321,20 +311,34 @@ public class Grid {
 
             }
         }
-        public void explodeMatchedFruits() {
+        public void finishExploding() {
+            for (int x=0;x<=9;x++) {
+                for (int y=0;y<9;y++) {
+                    if (grid[x][y].isAnimated == true && grid[x][y].animationState == AnimState.EXPLODED) {
+                        grid[x][y].isAnimated = false;
+                        grid[x][y].animationState = AnimState.READY;
+                    }
+                }
+            }
+        }
+        public void beginExplodingAnimation() {
             for (int x = 0; x < 10; x++) {
                 for (int y = 0; y < 10; y++) {
                     if (grid[x][y].is_matched && grid[x][y].imageIndex > -1) {
                         if (grid[x][y].special == "none") {
                             assingnSpecial(x, y);
-                            grid[x][y].collect();
+                            //grid[x][y].collect();
                             if (grid[x][y].special == "none") {
-                                grid[x][y].imageIndex = -1;
+                                grid[x][y].isAnimated = true;
+                                grid[x][y].animationState = AnimState.EXPLODING;
+                                grid[x][y].nextImageIndex = -1;
                             }
                         } else {
                             explodeSpecial(grid[x][y].special,x,y);
-                            grid[x][y].collect();
-                            grid[x][y].imageIndex = -1;
+                            //grid[x][y].collect();
+                            grid[x][y].isAnimated = true;
+                            grid[x][y].animationState = AnimState.EXPLODING;
+                            grid[x][y].nextImageIndex = -1;
                         }
 
                     }
@@ -418,6 +422,11 @@ public class Grid {
             //if animation is not running, but fruits are still selected
             finishSwapping();
         }
+        if (animationState == AnimState.EXPLODED) {
+            finishExploding();
+            labelFallingFruits();
+            beginFallingAnimation();
+        }
         if (animationState==AnimState.FALLEN) {
             finishFallingAnimations();//make animation smoother (optional) - because now fruit wait a little after each falling step
             spawnNewFruits();
@@ -427,7 +436,7 @@ public class Grid {
             animationState = getAnimationState();
             if (animationState==AnimState.READY) {
                 labelMatchedFruits();
-                explodeMatchedFruits();
+                beginExplodingAnimation();
                 labelFallingFruits();
                 beginFallingAnimation();
                 //will it work two times in a row?

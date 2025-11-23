@@ -6,5 +6,6 @@ public enum AnimState {
     RESWAPPED,
     FALLING,
     FALLEN,
-    EXPLODING
+    EXPLODING,
+    EXPLODED,
 }

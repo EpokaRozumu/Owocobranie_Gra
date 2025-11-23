@@ -23,6 +23,8 @@ public class Owoc {
 
     int x;
     int y;
+    int width;
+    int height;
 
     int matchesY = 0;//how many fruits are matched with it
     int matchesX = 0;
@@ -46,10 +48,15 @@ public class Owoc {
 
 
     public Owoc(int x, int y) {
+
         this.x = x;
         this.y = y;
+        this.width = 40;
+        this.height = 40;
+
         this.prevX = x;
         this.prevY = y;
+
         this.animationState = AnimState.READY;
         this.relative_speed = 1;
         this.special = "none";
@@ -123,6 +130,19 @@ public class Owoc {
         //This function is called by Grid's update animation
         //which is called repeatadly by the Swing timer
         //explosion.update();
+        //System.out.println(animationState);
+        if (animationState == AnimState.EXPLODING) {
+            System.out.println("exploding");
+            if (height < 80) {
+                height += 2;
+                width += 2;
+            } else {
+                width = 40;
+                height = 40;
+                imageIndex = nextImageIndex;
+                animationState = AnimState.EXPLODED;
+            }
+        }
         double dx = nextX - x;
         double dy = nextY - y;
         double distance = Math.sqrt(dx*dx + dy*dy);//distance to destination
@@ -133,31 +153,32 @@ public class Owoc {
         } else {
             relative_speed = 1.0;
         }
-
-        if (distance < BASE_SPEED*relative_speed) {
-            if (animationState == AnimState.FALLING ) {
-                finishFalling();
+        if (animationState != AnimState.EXPLODING) {//if animation needs movement
+            if (distance < BASE_SPEED*relative_speed) {
+                if (animationState == AnimState.FALLING ) {
+                    finishFalling();
+                } else {
+                    finishSwapping();
+                }
             } else {
-                finishSwapping();
-            }
-        } else {
-            //by Kuba Brzozowski:
-            //w sensie przypomniał mi on równanie na wektor kierunkowy
-            //którego zapomniałam
+                //by Kuba Brzozowski:
+                //w sensie przypomniał mi on równanie na wektor kierunkowy
+                //którego zapomniałam
 
-            //move at constant speed towards destination
-            dx = BASE_SPEED*relative_speed * dx / distance;
-            dy = BASE_SPEED*relative_speed * dy / distance;
-            x += dx;
-            y += dy;
-            isAnimated = true;
+                //move at constant speed towards destination
+                dx = BASE_SPEED*relative_speed * dx / distance;
+                dy = BASE_SPEED*relative_speed * dy / distance;
+                x += dx;
+                y += dy;
+                isAnimated = true;
+            }
         }
     }
     public void paintOwoc(Graphics g) {
         //explosion.draw(g);
         int r = 35;
         if (imageIndex > -1) {
-            g.drawImage(images[imageIndex],x-2,y-2,40,40,null);
+            g.drawImage(images[imageIndex],x-2-(width/2 - 20),y-2-(height/2 - 20),width,height,null);
             int specialIndex = getSpecialIndex(special);
             if (specialIndex > -1) {
                 g.drawImage(specialImages[specialIndex],x+10,y+10,16,16,null);
