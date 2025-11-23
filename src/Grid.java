@@ -7,8 +7,6 @@ import java.io.IOException;
 //import java.util.ArrayList;
 //this is a comment
 public class Grid {
-    //enum SwapState {READY,SWAPPING, SWAPPED, RESWAPPED, RESWAPPING};
-    //czy to na pewno najlepszy sposób przechowywania informacji o zaznaczonych owocach??
     int sel1x, sel1y, sel2x, sel2y;
     static final int SLOT_SPAN = 40;
     static final int GRID_OFFSET_X = 200;
@@ -145,13 +143,6 @@ public class Grid {
             length += sameFruitsOnRight(fruit_x, fruit_y);
             return length;
         }
-        public String returnSpecial(int vertical_line, int horizontal_line) {
-            if (vertical_line >= 3 && horizontal_line >= 3) {
-                return "bomb";
-            } else {
-                return  "none";
-            }
-        }
         public void labelMatchedFruits() {//where to put it ??
             for (int x = 0; x < 10; x++) {
                 for (int y = 1; y < 10; y++) {//dont check for the first row
@@ -258,18 +249,38 @@ public class Grid {
                 unselectAllFruits();
             }
         }
+        public void assingnSpecial(int x, int y) {
+            if ((grid[x][y].matchesX >= 5 && sameFruitsOnRight(x,y) == 1)
+                    || grid[x][y].matchesY >= 5 && sameFruitsBelow(x,y) == 1) {
+                grid[x][y].special = "flower";
+            }
+            if (grid[x][y].matchesX >= 3 && grid[x][y].matchesY >= 3) {
+                grid[x][y].special = "bomb";
+            } else if ((grid[x][y].matchesY >= 4) && sameFruitsBelow(x,y) == 3) {
+                grid[x][y].special = "vertical";
+            } else if ((grid[x][y].matchesX >= 4) && sameFruitsOnRight(x,y) == 1) {
+                grid[x][y].special = "horizontal";
+            }
+        }
+        public void explodeSpecial(String name,int x, int y) {
+
+        }
         public void explodeMatchedFruits() {
             for (int x = 0; x < 10; x++) {
                 for (int y = 0; y < 10; y++) {
                     if (grid[x][y].is_matched && grid[x][y].imageIndex > -1) {
-                        //grid[x][y].special = returnSpecial(getVerticalLineLength(x,y),getHorizontalLineLength(x,y));
-                        if (grid[x][y].matchesX >= 3 && grid[x][y].matchesY >= 3) {
-                            grid[x][y].special = "bomb";
-                        }
-                        grid[x][y].collect();
                         if (grid[x][y].special == "none") {
+                            assingnSpecial(x, y);
+                            grid[x][y].collect();
+                            if (grid[x][y].special == "none") {
+                                grid[x][y].imageIndex = -1;
+                            }
+                        } else {
+                            explodeSpecial(grid[x][y].special,x,y);
+                            grid[x][y].collect();
                             grid[x][y].imageIndex = -1;
                         }
+
                     }
                 }
             }
