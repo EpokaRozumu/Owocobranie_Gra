@@ -276,14 +276,12 @@ public class Grid {
         }
         public void explodeSpecial(String name,int special_x, int special_y) {
             //problem: bombs exploded by bombs do not explode other fruits
-            //todo: make an explode single fruit function
             switch (name) {
                 case "flower":
                     for (int x=0;x<=9;x++) {
                         for (int y=0;y<9;y++) {
                             if (grid[x][y].imageIndex == grid[special_x][special_y].imageIndex) {
                                 grid[x][y].collect();
-                                grid[x][y].imageIndex = -1;
                             }
                         }
                 }
@@ -292,7 +290,6 @@ public class Grid {
                         for (int y=special_y-1;y<=(special_y+1);y++) {
                             if (0<=x && x< 10 && 0<=y && y < 10) {
                                 grid[x][y].collect();
-                                grid[x][y].imageIndex = -1;
                             }
 
                         }
@@ -300,13 +297,11 @@ public class Grid {
                     case "vertical":
                         for (int y=0; y<=9; y++) {
                             grid[special_x][y].collect();
-                            grid[special_x][y].imageIndex = -1;
                         }
 
                     case "horizontal":
                         for (int x=0;x<=9;x++) {
                             grid[x][special_y].collect();
-                            grid[x][special_y].imageIndex = -1;
                         }
 
             }
@@ -330,12 +325,14 @@ public class Grid {
                     if (grid[x][y].is_matched && grid[x][y].imageIndex > -1) {
                         if (grid[x][y].special == "none") {
                             assingnSpecial(x, y);
-                            //grid[x][y].collect();
+                            grid[x][y].isAnimated = true;
+                            grid[x][y].animationState = AnimState.EXPLODING;
                             if (grid[x][y].special == "none") {
-                                grid[x][y].isAnimated = true;
-                                grid[x][y].animationState = AnimState.EXPLODING;
                                 grid[x][y].nextImageIndex = -1;
+                            } else {
+                                grid[x][y].nextImageIndex = grid[x][y].imageIndex;
                             }
+
                         } else {
                             explodeSpecial(grid[x][y].special,x,y);
                             //grid[x][y].collect();
@@ -359,8 +356,12 @@ public class Grid {
                     if (grid[x][y+1].imageIndex == -1 && grid[x][y].imageIndex != -1) {
                         //if this is an unempty fruit above an empty place
                         grid[x][y].animationState = AnimState.FALLING;
+                        //stop all animations of this fruit
+                        grid[x][y].width = 40;
+                        grid[x][y].height = 40;
+                        grid[x][y].x = gridToScreenX(x);
+                        grid[x][y].y= gridToScreenY(y);
                         for (int y2 = 0; y2 < y; y2++) {
-                              //todo:all fruits above it should also fall
                             //not working when another fruit is falling exacly two spaces above or below
                             if (grid[x][y2].animationState ==AnimState.READY) {
                                 grid[x][y2].animationState = AnimState.FALLING;
@@ -422,6 +423,7 @@ public class Grid {
             }
         }
         animationState = getAnimationState();
+        finishExploding();
         if (numSelectedFruits() == 2 && isAnyAnimated==false) {
             //if animation is not running, but fruits are still selected
             finishSwapping();

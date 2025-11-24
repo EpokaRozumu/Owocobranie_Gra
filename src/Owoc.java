@@ -120,9 +120,14 @@ public class Owoc {
         animationState = AnimState.FALLEN;
     }
     public void collect() {
+
         if (imageIndex > -1) {
             gatunek = gatunki[imageIndex];
             collectedFruits.replace(gatunek, collectedFruits.get(gatunek)+1) ;
+            if (special == "none") {
+                imageIndex = -1;
+            }
+
         }
     }
 
@@ -152,7 +157,8 @@ public class Owoc {
         } else {
             relative_speed = 1.0;
         }
-        if (animationState != AnimState.EXPLODING) {//if animation needs movement
+
+        if (animationState == AnimState.SWAPPING || animationState == AnimState.RESWAPPING || animationState == AnimState.FALLING) {//if animation needs movement
             if (distance < BASE_SPEED*relative_speed) {
                 if (animationState == AnimState.FALLING ) {
                     finishFalling();
