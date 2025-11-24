@@ -132,7 +132,6 @@ public class Owoc {
         //explosion.update();
         //System.out.println(animationState);
         if (animationState == AnimState.EXPLODING) {
-            System.out.println("exploding");
             if (height < 80) {
                 height += 2;
                 width += 2;

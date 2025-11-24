@@ -312,9 +312,12 @@ public class Grid {
             }
         }
         public void finishExploding() {
-            for (int x=0;x<=9;x++) {
-                for (int y=0;y<9;y++) {
-                    if (grid[x][y].isAnimated == true && grid[x][y].animationState == AnimState.EXPLODED) {
+            for (int x=0;x<10;x++) {
+                for (int y=0;y<10;y++) {
+                    if (grid[x][y].animationState == AnimState.EXPLODING ) {
+                        System.out.println("detected unfinished exploding animation");
+                    }
+                    if (grid[x][y].animationState == AnimState.EXPLODED) {
                         grid[x][y].isAnimated = false;
                         grid[x][y].animationState = AnimState.READY;
                     }
@@ -336,6 +339,7 @@ public class Grid {
                         } else {
                             explodeSpecial(grid[x][y].special,x,y);
                             //grid[x][y].collect();
+                            //why is there no animation of special fruits??
                             grid[x][y].isAnimated = true;
                             grid[x][y].animationState = AnimState.EXPLODING;
                             grid[x][y].nextImageIndex = -1;
@@ -378,7 +382,7 @@ public class Grid {
                         swapValues(x,y,x,y+1);
                         int placeholder;
                         //then reset above slot to previous position
-                        grid[x][y].y -= SLOT_SPAN;
+                        grid[x][y].y = gridToScreenY(y);
                         grid[x][y].isAnimated = false;
                         grid[x][y].nextY = grid[x][y].y;
                         grid[x][y].animationState = AnimState.READY;
@@ -455,7 +459,9 @@ public class Grid {
 //                    g.setColor(Color.pink);
 //                    g.fillOval(gridToScreenX(x)+16, gridToScreenY(y)+14, SLOT_SPAN/4, SLOT_SPAN/4);
 //                }
-        g.drawString(x + "," + y, grid[x][y].x, grid[x][y].y);
+        g.drawString(grid[x][y].animationState + "", grid[x][y].x, grid[x][y].y);
+        g.setFont(new Font("Comic Sans", Font.BOLD, 8));
+        g.drawString(x + "," + y, grid[x][y].x, grid[x][y].y+6);
     }
     public void paintGrid(Graphics g) {
         particleSource.draw(g);
@@ -466,10 +472,10 @@ public class Grid {
                     g.setColor(Color.black);
                     g.drawRect(gridToScreenX(x), gridToScreenY(y), SLOT_SPAN, SLOT_SPAN);
                 }
-                //displayFruitDebugInfo(x,y,g);
+                displayFruitDebugInfo(x,y,g);
             }
         }
         g.setColor(Color.decode("0xEEEEEE"));
-        g.fillRect(gridToScreenX(0),gridToScreenY(0),SLOT_SPAN*10,SLOT_SPAN);
+        //g.fillRect(gridToScreenX(0),gridToScreenY(0),SLOT_SPAN*10,SLOT_SPAN);
     }
 }
