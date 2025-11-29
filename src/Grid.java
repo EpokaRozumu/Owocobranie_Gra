@@ -7,11 +7,6 @@ import java.io.IOException;
 //import java.util.ArrayList;
 //this is a comment
 
-//LIST OF BUGS:
-//1) INFINITE FALLING - fixed?
-//2) RESWAPPING ANIMATION DOES NOT ANIMATE
-//3) RESWAPPING ANIMATION FREEZES AT AN RESWAPPED STATE
-//4) FALLING SIDEWAYS - it also causes infinite falling (-_-) - fixed?
 
 public class Grid {
     int sel1x, sel1y, sel2x, sel2y;
@@ -213,7 +208,8 @@ public class Grid {
                 grid[sel1x][sel1y].animationState = AnimState.RESWAPPING;
             }
         }
-        public void handleSwapping(MouseEvent e) {
+        public boolean handleSwapping(MouseEvent e) {
+            //returns true if a move is made
             int mx = e.getX();
             int my = e.getY();
             animationState = getAnimationState();
@@ -234,6 +230,7 @@ public class Grid {
                     }
                     if (selectedFruitsAreAdjacent()) {
                         swapSelectedFruits();
+                        return true;
                     } else {
                         unselectAllFruits();
                     }
@@ -244,6 +241,7 @@ public class Grid {
                     //unselectAllFruits();
                 }
             }
+            return false;
         }
         public void finishSwapping() {
             if (grid[sel1x][sel1y].animationState == AnimState.SWAPPED
@@ -272,7 +270,9 @@ public class Grid {
                 unselectAllFruits();
             }
         }
+    //functions for exploding
         public void assingnSpecial(int x, int y) {
+            //special will be assigned only at the end of animation
             if ((grid[x][y].matchesX >= 5 && sameFruitsOnRight(x,y) == 2)
                     || (grid[x][y].matchesY >= 5 && sameFruitsBelow(x,y) == 2)) {
                 grid[x][y].special = "flower";
@@ -286,14 +286,18 @@ public class Grid {
                 grid[x][y].special = "horizontal";
             }
         }
-        public void explodeSpecial(String name,int special_x, int special_y) {
+        public boolean explodeSpecial(String name,int special_x, int special_y, int iteration) {
+            //todo: invent a system of chain reactions that does not cause infinite loops
             //problem: bombs exploded by bombs do not explode other fruits
+            if (grid[special_x][special_y].animationState == AnimState.EXPLODING) {
+                return false;
+            }
             switch (name) {
                 case "flower":
                     for (int x=0;x<=9;x++) {
                         for (int y=0;y<9;y++) {
                             if (grid[x][y].imageIndex == grid[special_x][special_y].imageIndex) {
-                                grid[x][y].collect();
+                                if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
                             }
                         }
                 }
@@ -301,59 +305,68 @@ public class Grid {
                     for (int x=special_x-1;x<=(special_x+1);x++) {
                         for (int y=special_y-1;y<=(special_y+1);y++) {
                             if (0<=x && x< 10 && 0<=y && y < 10) {
-                                grid[x][y].collect();
+                                if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
                             }
 
                         }
                     }
                     case "vertical":
                         for (int y=0; y<=9; y++) {
-                            grid[special_x][y].collect();
+                            if (grid[special_x][y].special == "none") explodeAFruit(special_x,y, iteration);
                         }
 
                     case "horizontal":
                         for (int x=0;x<=9;x++) {
-                            grid[x][special_y].collect();
+                            if (grid[x][special_y].special == "none") explodeAFruit(x,special_y, iteration);
                         }
 
             }
+            return true;
         }
         public void finishExploding() {
             for (int x=0;x<10;x++) {
                 for (int y=0;y<10;y++) {
                     if (grid[x][y].animationState == AnimState.EXPLODING ) {
-                        System.out.println("detected unfinished exploding animation");
+                        //System.out.println("detected unfinished exploding animation");
                     }
                     if (grid[x][y].animationState == AnimState.EXPLODED) {
+                        if (grid[x][y].deleteSpecialAfterExploding) grid[x][y].special = "none";//?
                         grid[x][y].isAnimated = false;
                         grid[x][y].animationState = AnimState.READY;
                     }
                 }
             }
         }
+        public boolean explodeAFruit(int x, int y, int iteration) {
+            if (grid[x][y].animationState != AnimState.READY) {
+                return false;
+            }
+            if (grid[x][y].special == "none") {
+                assingnSpecial(x, y);
+                grid[x][y].isAnimated = true;
+                grid[x][y].animationState = AnimState.EXPLODING;
+                if (grid[x][y].special == "none") {
+                    grid[x][y].nextImageIndex = -1;
+                } else {
+                    grid[x][y].nextImageIndex = grid[x][y].imageIndex;
+                }
+                grid[x][y].deleteSpecialAfterExploding = false;//because we are creating a new special
+
+            }
+            else {
+                explodeSpecial(grid[x][y].special,x,y,0);
+                grid[x][y].isAnimated = true;
+                grid[x][y].animationState = AnimState.EXPLODING;
+                grid[x][y].nextImageIndex = -1;
+                grid[x][y].deleteSpecialAfterExploding = true;//because we are using up an existing special
+            }
+            return true;
+        }
         public void beginExplodingAnimation() {
             for (int x = 0; x < 10; x++) {
                 for (int y = 0; y < 10; y++) {
                     if (grid[x][y].is_matched && grid[x][y].imageIndex > -1) {
-                        if (grid[x][y].special == "none") {
-                            assingnSpecial(x, y);
-                            grid[x][y].isAnimated = true;
-                            grid[x][y].animationState = AnimState.EXPLODING;
-                            if (grid[x][y].special == "none") {
-                                grid[x][y].nextImageIndex = -1;
-                            } else {
-                                grid[x][y].nextImageIndex = grid[x][y].imageIndex;
-                            }
-
-                        } else {
-                            explodeSpecial(grid[x][y].special,x,y);
-                            //grid[x][y].collect();
-                            //why is there no animation of special fruits??
-                            grid[x][y].isAnimated = true;
-                            grid[x][y].animationState = AnimState.EXPLODING;
-                            grid[x][y].nextImageIndex = -1;
-                        }
-
+                        explodeAFruit(x,y,0);
                     }
                 }
             }

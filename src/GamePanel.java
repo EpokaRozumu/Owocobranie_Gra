@@ -14,17 +14,25 @@ import java.io.IOException;
 class GamePanel extends JPanel {
     RedSquare redSquare = new RedSquare();
     Grid grid = new Grid();
-    final int TIMER_SPEED = 50;//best - 30ms\
+    final int TIMER_SPEED = 30;//best - 30ms\
     int secondsPassed = 0;
     Font largeFont= new Font("Comic Sans MS", Font.BOLD, 50);
     Font smallFont = new Font("Comic Sans MS",Font.BOLD,12);
-    Timer timer;
+    Font mediumFont = new Font("Comic Sans MS",Font.BOLD,20);
+
+    int goalFruitIndex ;
+    int turnsLeft;
+    int fruitsLeftToWin;
     public GamePanel() {
+        setupNewGame();
         setBorder(BorderFactory.createLineBorder(Color.black));
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 redSquare.moveSquare(e.getX(),e.getY());
-                grid.handleSwapping(e);
+                boolean madeAMove = grid.handleSwapping(e);
+                if (madeAMove) {
+                    turnsLeft--;
+                }
                 repaint();
             }
         });
@@ -44,11 +52,26 @@ class GamePanel extends JPanel {
         timer.start();
     }
     //all custom painting here
+    public void setupNewGame() {
+        turnsLeft = 40;
+        fruitsLeftToWin = 30;
+        goalFruitIndex = Owoc.random();
+    }
+    public void displayGameState(Graphics g, int x, int y) {
+        g.setFont(mediumFont);
+        g.drawString("Moves left: " + turnsLeft, x, y);
+        g.drawString(fruitsLeftToWin + "x    ", x+200, y);
+        g.drawImage(Owoc.getImage(goalFruitIndex), x + 250,y-20,40,40,null);
+
+    }
     public void displayDebugInfo(Graphics g) {
         g.drawString(String.valueOf(grid.animationState), 20, 600);
         g.setFont(smallFont);
         g.drawString(secondsPassed + "", 20, 50);
         g.drawString("ZEBRANE OWOCE:", 20, 170);
+    }
+
+    public void displayCollectedFruits(Graphics g) {
         for (int i=0; i<Owoc.gatunki.length; i++) {
             g.drawString(Owoc.gatunki[i] + " " +Owoc.collectedFruits.get(Owoc.gatunki[i]), 20, 200+30*i);
         }
@@ -56,6 +79,8 @@ class GamePanel extends JPanel {
     public void paintComponent(Graphics g) {
         //g will actually be Graphics2d
         super.paintComponent(g);
+        displayCollectedFruits(g);
+        displayGameState(g,50,80);
         g.setFont(largeFont);
         g.drawString("Owocobranie", 200, 55);//may replace this with image of a title
 

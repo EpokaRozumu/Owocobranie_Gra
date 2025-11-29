@@ -41,6 +41,7 @@ public class Owoc {
 
     String gatunek;
     String special;
+    boolean deleteSpecialAfterExploding = false;
     int imageIndex = 0;//-1 if this fruit was exploded
     //image index is useful, because it takes less space if fruits hold only their type, and not a whole image
     //I hope it will make this program faster?
@@ -60,9 +61,10 @@ public class Owoc {
         this.animationState = AnimState.READY;
         this.relative_speed = 1;
         this.special = "none";
+        this.deleteSpecialAfterExploding = false;
         //this.explosion = new ParticleSource(x,y);
         //wylosuj typ owocu
-        int randomNum = (int)(Math.random() * (gatunki.length));
+        int randomNum = random();
         this.imageIndex = randomNum;
         this.gatunek = gatunki[randomNum];
 //        if (this.gatunek == "cytryna" ) {
@@ -82,6 +84,12 @@ public class Owoc {
             }
         }
         return -1;
+    }
+    public static BufferedImage getImage(int index) {
+        return images[index];
+    }
+    public static int random() {
+        return (int)(Math.random() * (gatunki.length));
     }
     public static void loadImages()  {
         for (int i = 0; i < gatunki.length; i++) {
@@ -131,6 +139,7 @@ public class Owoc {
         }
     }
 
+
     public void updateAnimation(int timer_step) {
         //This function is called by Grid's update animation
         //which is called repeatadly by the Swing timer
@@ -143,8 +152,9 @@ public class Owoc {
             } else {
                 width = 40;
                 height = 40;
-                imageIndex = nextImageIndex;
+                //imageIndex = nextImageIndex;
                 animationState = AnimState.EXPLODED;
+                collect();
             }
         }
         double dx = nextX - x;
