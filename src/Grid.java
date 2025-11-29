@@ -6,6 +6,13 @@ import java.io.File;
 import java.io.IOException;
 //import java.util.ArrayList;
 //this is a comment
+
+//LIST OF BUGS:
+//1) INFINITE FALLING - fixed?
+//2) RESWAPPING ANIMATION DOES NOT ANIMATE
+//3) RESWAPPING ANIMATION FREEZES AT AN RESWAPPED STATE
+//4) FALLING SIDEWAYS - it also causes infinite falling (-_-) - fixed?
+
 public class Grid {
     int sel1x, sel1y, sel2x, sel2y;
     static final int SLOT_SPAN = 40;
@@ -189,12 +196,17 @@ public class Grid {
             //set image destinations
             grid[sel1x][sel1y].nextImageIndex = grid[sel2x][sel2y].imageIndex;
             grid[sel2x][sel2y].nextImageIndex = grid[sel1x][sel1y].imageIndex;
+
             //init animation
             grid[sel1x][sel1y].isAnimated = true;
             grid[sel2x][sel2y].isAnimated = true;
             if (grid[sel2x][sel2y].animationState == AnimState.READY) {
+                //remember position before animation
+                grid[sel2x][sel2y].prevX = grid[sel2x][sel2y].x;
+                grid[sel1x][sel1y].prevY = grid[sel1x][sel1y].y;
+
                 grid[sel2x][sel2y].animationState = AnimState.SWAPPING;
-                grid[sel1x][sel1y].animationState =AnimState.SWAPPING;
+                grid[sel1x][sel1y].animationState = AnimState.SWAPPING;
             } else if (grid[sel2x][sel2y].animationState == AnimState.SWAPPED) {
                 System.out.println("Reswapping");
                 grid[sel2x][sel2y].animationState = AnimState.RESWAPPING;
@@ -248,8 +260,8 @@ public class Grid {
                     //now the program is ready for selecting new fruits
                 } else {
                     swapSelectedFruits();//start reswapping
-                    grid[sel1x][sel1y].animationState = AnimState.RESWAPPED;
-                    grid[sel2x][sel2y].animationState = AnimState.RESWAPPED;
+                    grid[sel1x][sel1y].animationState = AnimState.RESWAPPING;
+                    grid[sel2x][sel2y].animationState = AnimState.RESWAPPING;
                     //Reswapping that starts here, ends in update function
                     //when fruits reach desired positions
                 }
@@ -353,7 +365,8 @@ public class Grid {
             //sets animation state to falling for each fruit that has empty space below
             for (int x = 0; x < 10; x++) {
                 for (int y = 0; y < 9; y++) {
-                    if (grid[x][y+1].imageIndex == -1 && grid[x][y].imageIndex != -1) {
+                    if (grid[x][y+1].imageIndex == -1 && grid[x][y].imageIndex != -1
+                            && grid[x][y+1].animationState == AnimState.READY && grid[x][y].isAnimated == false) {
                         //if this is an unempty fruit above an empty place
                         grid[x][y].animationState = AnimState.FALLING;
                         //stop all animations of this fruit
