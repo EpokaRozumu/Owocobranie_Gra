@@ -22,7 +22,7 @@ class GamePanel extends JPanel {
 
     int goalFruitIndex ;
     int turnsLeft;
-    int fruitsLeftToWin;
+    int fruitsToWin;
     public GamePanel() {
         setupNewGame();
         setBorder(BorderFactory.createLineBorder(Color.black));
@@ -54,12 +54,13 @@ class GamePanel extends JPanel {
     //all custom painting here
     public void setupNewGame() {
         turnsLeft = 40;
-        fruitsLeftToWin = 30;
+        fruitsToWin = 30;
         goalFruitIndex = Owoc.random();
     }
     public void displayGameState(Graphics g, int x, int y) {
         g.setFont(mediumFont);
         g.drawString("Moves left: " + turnsLeft, x, y);
+        int fruitsLeftToWin = fruitsToWin - Owoc.getCollectedFruitsOfIndex(goalFruitIndex);
         g.drawString(fruitsLeftToWin + "x    ", x+200, y);
         g.drawImage(Owoc.getImage(goalFruitIndex), x + 250,y-20,40,40,null);
 

@@ -138,7 +138,9 @@ public class Owoc {
 
         }
     }
-
+    public  static int getCollectedFruitsOfIndex(int index) {
+        return collectedFruits.get(gatunki[index]);
+    }
 
     public void updateAnimation(int timer_step) {
         //This function is called by Grid's update animation
