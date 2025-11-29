@@ -294,8 +294,8 @@ public class Grid {
             }
             switch (name) {
                 case "flower":
-                    for (int x=0;x<=9;x++) {
-                        for (int y=0;y<9;y++) {
+                    for (int x=0;x<10;x++) {
+                        for (int y=0;y<10;y++) {
                             if (grid[x][y].imageIndex == grid[special_x][special_y].imageIndex) {
                                 if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
                             }
@@ -304,8 +304,13 @@ public class Grid {
                 case  "bomb"://todo:bomb is not working properly
                     for (int x=special_x-1;x<=(special_x+1);x++) {
                         for (int y=special_y-1;y<=(special_y+1);y++) {
-                            if (0<=x && x< 10 && 0<=y && y < 10) {
+//                            if (0<=x && x< 10 && 0<=y && y < 10) {
+//                                if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
+//                            }
+                            try {
                                 if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
+                            } catch (Exception e) {
+                                System.out.println(e);
                             }
 
                         }
@@ -354,6 +359,7 @@ public class Grid {
 
             }
             else {
+
                 explodeSpecial(grid[x][y].special,x,y,0);
                 grid[x][y].isAnimated = true;
                 grid[x][y].animationState = AnimState.EXPLODING;
