@@ -70,7 +70,7 @@ class GamePanel extends JPanel {
         //g.drawString(String.valueOf(grid.animationState), 20, 600);
         g.setFont(smallFont);
         //g.drawString(secondsPassed + "", 20, 50);
-        g.drawString("game panel size" + getSize(),120,10);
+        g.drawString("zoom" + zoom,120,10);
         //g.drawString("ZEBRANE OWOCE:", 20, 170);
     }
 
@@ -81,7 +81,7 @@ class GamePanel extends JPanel {
     }
     public void paintComponent(Graphics g) {
         //g will actually be Graphics2d
-        zoom = getHeight()/600;
+        zoom = getHeight()/600.0f;
         super.paintComponent(g);
         //displayCollectedFruits(g);
         displayGameState(g,250,110);

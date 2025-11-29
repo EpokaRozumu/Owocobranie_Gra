@@ -25,7 +25,7 @@ public class Owocobranie {
         //w lewym górnym rogu.
         f.setLayout(new BoxLayout(f.getContentPane(), BoxLayout.Y_AXIS));
         GamePanel panel = new GamePanel();
-        panel.setMaximumSize(new Dimension(800, 600));
+        //panel.setMaximumSize(new Dimension(800, 600));
         //panel.setBackground(Color.darkGray);
         f.add(panel);
         f.pack();
