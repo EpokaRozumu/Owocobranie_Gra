@@ -19,11 +19,12 @@ class GamePanel extends JPanel {
     Font largeFont= new Font("Comic Sans MS", Font.BOLD, 50);
     Font smallFont = new Font("Comic Sans MS",Font.BOLD,12);
     Font mediumFont = new Font("Comic Sans MS",Font.BOLD,20);
-
+    float zoom = 1f;
     int goalFruitIndex ;
     int turnsLeft;
     int fruitsToWin;
     public GamePanel() {
+
         setupNewGame();
         setBorder(BorderFactory.createLineBorder(Color.black));
         addMouseListener(new MouseAdapter() {
@@ -66,10 +67,11 @@ class GamePanel extends JPanel {
 
     }
     public void displayDebugInfo(Graphics g) {
-        g.drawString(String.valueOf(grid.animationState), 20, 600);
+        //g.drawString(String.valueOf(grid.animationState), 20, 600);
         g.setFont(smallFont);
-        g.drawString(secondsPassed + "", 20, 50);
-        g.drawString("ZEBRANE OWOCE:", 20, 170);
+        //g.drawString(secondsPassed + "", 20, 50);
+        g.drawString("game panel size" + getSize(),120,10);
+        //g.drawString("ZEBRANE OWOCE:", 20, 170);
     }
 
     public void displayCollectedFruits(Graphics g) {
@@ -79,11 +81,12 @@ class GamePanel extends JPanel {
     }
     public void paintComponent(Graphics g) {
         //g will actually be Graphics2d
+        zoom = getHeight()/600;
         super.paintComponent(g);
-        displayCollectedFruits(g);
-        displayGameState(g,50,80);
+        //displayCollectedFruits(g);
+        displayGameState(g,250,110);
         g.setFont(largeFont);
-        g.drawString("Owocobranie", 200, 55);//may replace this with image of a title
+        g.drawString("Owocobranie", 240, 55);//may replace this with image of a title
 
         displayDebugInfo(g);
         grid.paintGrid(g);

@@ -12,7 +12,7 @@ public class Grid {
     int sel1x, sel1y, sel2x, sel2y;
     static final int SLOT_SPAN = 40;
     static final int GRID_OFFSET_X = 200;
-    static final int GRID_OFFSET_Y = 100;
+    static final int GRID_OFFSET_Y = 150;
 
     AnimState animationState;
     ParticleSource particleSource;
@@ -301,7 +301,7 @@ public class Grid {
                             }
                         }
                 }
-                    case  "bomb":
+                case  "bomb"://todo:bomb is not working properly
                     for (int x=special_x-1;x<=(special_x+1);x++) {
                         for (int y=special_y-1;y<=(special_y+1);y++) {
                             if (0<=x && x< 10 && 0<=y && y < 10) {
@@ -500,10 +500,10 @@ public class Grid {
                     g.setColor(Color.black);
                     g.drawRect(gridToScreenX(x), gridToScreenY(y), SLOT_SPAN, SLOT_SPAN);
                 }
-                displayFruitDebugInfo(x,y,g);
+                //displayFruitDebugInfo(x,y,g);
             }
         }
         g.setColor(Color.decode("0xEEEEEE"));
-        //g.fillRect(gridToScreenX(0),gridToScreenY(0),SLOT_SPAN*10,SLOT_SPAN);
+        g.fillRect(gridToScreenX(0),gridToScreenY(0),SLOT_SPAN*10,SLOT_SPAN);
     }
 }
