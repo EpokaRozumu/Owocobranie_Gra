@@ -197,8 +197,8 @@ public class Owoc {
         if (imageIndex > -1) {
             g.drawImage(images[imageIndex],x-2-(width/2 - 20),y-2-(height/2 - 20),width,height,null);
             int specialIndex = getSpecialIndex(special);
-            if (specialIndex > -1) {
-                g.drawImage(specialImages[specialIndex],x+10,y+10,16,16,null);
+            if (specialIndex > -1 && !(animationState == AnimState.EXPLODING && deleteSpecialAfterExploding==false)) {
+                g.drawImage(specialImages[specialIndex],x+10,y+10,16*width/40,16*height/40,null);
             }
         }
     }

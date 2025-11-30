@@ -6,7 +6,10 @@ import java.io.File;
 import java.io.IOException;
 //import java.util.ArrayList;
 //this is a comment
-
+//list of known bugs:
+//special sometimes dont do anything
+//sometimes vertical or horizontal or flower trigger a cross???
+// fi
 
 public class Grid {
     int sel1x, sel1y, sel2x, sel2y;
@@ -83,6 +86,7 @@ public class Grid {
         }
     //functions for finding matched fruits
         private int sameFruitsAbove(int fruit_x, int fruit_y) {
+            if (grid[fruit_x][fruit_y].imageIndex == -1) return 0;
             int l = 0;
             if (fruit_y > 0) {//if not in top row
                 for (int y = fruit_y-1; y >= 1; y--) {//dont search the top row
@@ -96,6 +100,7 @@ public class Grid {
             return l;
         }
         private int sameFruitsBelow(int fruit_x, int fruit_y) {
+        if (grid[fruit_x][fruit_y].imageIndex == -1) return 0;
         int l = 0;
             if (fruit_x <= (grid[0].length-1)) {//if not in bottom row
                 for (int y = fruit_y+1; y < grid[0].length; y++) {
@@ -110,6 +115,7 @@ public class Grid {
             return l;
         }
         private int sameFruitsOnLeft(int fruit_x, int fruit_y) {
+        if (grid[fruit_x][fruit_y].imageIndex == -1) return 0;
         int l = 0;
             if (fruit_x > 0) {//if not in  leftmost row
                 for (int x = fruit_x-1; x >= 0; x--) {
@@ -123,6 +129,7 @@ public class Grid {
         return l;
         }
         private int sameFruitsOnRight(int fruit_x, int fruit_y) {
+        if (grid[fruit_x][fruit_y].imageIndex == -1) return 0;
         int l = 0;
             if (fruit_x < (grid.length-1)) {//if not in rightmost row
                 for (int x = fruit_x+1; x < grid.length; x++) {
@@ -250,6 +257,12 @@ public class Grid {
                 //After the fruits are swapped for the fist time
                 labelMatchedFruits();//checks matches for each fruit
                 if (grid[sel1x][sel1y].is_matched || grid[sel2x][sel2y].is_matched) {//if matched
+
+                    //important - swap specials
+                    String special_holder = grid[sel1x][sel1y].special;
+                    grid[sel1x][sel1y].special = grid[sel2x][sel2y].special;
+                    grid[sel2x][sel2y].special = special_holder;
+
                     grid[sel1x][sel1y].animationState = AnimState.READY;
                     grid[sel2x][sel2y].animationState = AnimState.READY;
                     beginExplodingAnimation();
@@ -278,16 +291,18 @@ public class Grid {
                     || (grid[x][y].matchesY >= 5 && sameFruitsBelow(x,y) == 2)) {
                 grid[x][y].special = "flower";
             }
-            //System.out.println(sameFruitsBelow(x,y));
-            if (grid[x][y].matchesX >= 3 && grid[x][y].matchesY >= 3) {
-                grid[x][y].special = "bomb";
-            } else if ((grid[x][y].matchesY >= 4) && sameFruitsBelow(x,y) == 3) {
+            //if (grid[x][y].matchesX >= 3 && grid[x][y].matchesY >= 3) {
+//                grid[x][y].special = "bomb";
+//            }
+            else if ((grid[x][y].matchesY == 4) && sameFruitsBelow(x,y) == 3) {
                 grid[x][y].special = "vertical";
-            } else if ((grid[x][y].matchesX >= 4) && sameFruitsOnRight(x,y) == 1) {
+            } else if ((grid[x][y].matchesX == 4) && sameFruitsOnRight(x,y) == 1) {
                 grid[x][y].special = "horizontal";
             }
         }
         public boolean explodeSpecial(String name,int special_x, int special_y, int iteration) {
+            System.out.println("exploding: "+name+"x:" +special_x + " y: " + special_y);
+            System.out.println("animState: "+grid[special_x][special_y].animationState);
             //todo: invent a system of chain reactions that does not cause infinite loops
             //problem: bombs exploded by bombs do not explode other fruits
             if (grid[special_x][special_y].animationState == AnimState.EXPLODING) {
@@ -302,20 +317,20 @@ public class Grid {
                             }
                         }
                 }
-                case  "bomb"://todo:bomb is not working properly
-                    for (int x=special_x-1;x<=(special_x+1);x++) {
-                        for (int y=special_y-1;y<=(special_y+1);y++) {
-//                            if (0<=x && x< 10 && 0<=y && y < 10) {
+//                case  "bomb"://todo:bomb is not working properly
+//                    for (int x=special_x-1;x<=(special_x+1);x++) {
+//                        for (int y=special_y-1;y<=(special_y+1);y++) {
+////                            if (0<=x && x< 10 && 0<=y && y < 10) {
+////                                if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
+////                            }
+//                            try {
 //                                if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
+//                            } catch (Exception e) {
+//                                System.out.println(e);
 //                            }
-                            try {
-                                if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
-                            } catch (Exception e) {
-                                System.out.println(e);
-                            }
-
-                        }
-                    }
+//
+//                        }
+//                    }
                     case "vertical":
                         for (int y=0; y<=9; y++) {
                             if (grid[special_x][y].special == "none") explodeAFruit(special_x,y, iteration);
@@ -507,7 +522,7 @@ public class Grid {
                     g.setColor(Color.black);
                     g.drawRect(gridToScreenX(x), gridToScreenY(y), SLOT_SPAN, SLOT_SPAN);
                 }
-                //displayFruitDebugInfo(x,y,g);
+                displayFruitDebugInfo(x,y,g);
             }
         }
         g.setColor(Color.decode("0xEEEEEE"));
