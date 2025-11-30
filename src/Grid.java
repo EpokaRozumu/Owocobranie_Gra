@@ -300,8 +300,9 @@ public class Grid {
             }
         }
         public boolean explodeSpecial(String name,int special_x, int special_y, int iteration) {
-            System.out.println("exploding: "+name+"x:" +special_x + " y: " + special_y);
-            System.out.println("animState: "+grid[special_x][special_y].animationState);
+            iteration++;
+
+            System.out.println("exploding: "+name+"x:" +special_x + " y: " + special_y + "iteration: " +iteration);
             //todo: invent a system of chain reactions that does not cause infinite loops
             //problem: bombs exploded by bombs do not explode other fruits
             switch (name) {
@@ -309,7 +310,7 @@ public class Grid {
                     for (int x=0;x<10;x++) {
                         for (int y=0;y<10;y++) {
                             if (grid[x][y].imageIndex == grid[special_x][special_y].imageIndex) {
-                                if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
+                                explodeAFruit(x,y, iteration);
                             }
                         }
                     }
@@ -318,10 +319,10 @@ public class Grid {
                         for (int x=special_x-1;x<=(special_x+1);x++) {
                             for (int y=special_y-1;y<=(special_y+1);y++) {
                                 if (0<=x && x< 10 && 0<=y && y < 10) {
-                                    if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
+                                    explodeAFruit(x,y, iteration);
                                 }
                                 try {
-                                    if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
+                                    explodeAFruit(x,y, iteration);
                                 } catch (Exception e) {
                                     System.out.println(e);
                                 }
@@ -331,13 +332,13 @@ public class Grid {
                         break;
                     case "vertical":
                         for (int y=0; y<=9; y++) {
-                            if (grid[special_x][y].special == "none") explodeAFruit(special_x,y, iteration);
+                            explodeAFruit(special_x,y, iteration);
                         }
                         break;
 
                     case "horizontal":
                         for (int x=0;x<=9;x++) {
-                            if (grid[x][special_y].special == "none") explodeAFruit(x,special_y, iteration);
+                            explodeAFruit(x,special_y, iteration);
                         }
                         break;
 
@@ -379,7 +380,7 @@ public class Grid {
                 grid[x][y].animationState = AnimState.EXPLODING;
                 grid[x][y].nextImageIndex = -1;
                 grid[x][y].deleteSpecialAfterExploding = true;//because we are using up an existing special
-                explodeSpecial(grid[x][y].special,x,y,0);
+                explodeSpecial(grid[x][y].special,x,y,iteration);
 
             }
             return true;
@@ -522,7 +523,7 @@ public class Grid {
                     g.setColor(Color.black);
                     g.drawRect(gridToScreenX(x), gridToScreenY(y), SLOT_SPAN, SLOT_SPAN);
                 }
-                displayFruitDebugInfo(x,y,g);
+                //displayFruitDebugInfo(x,y,g);
             }
         }
         g.setColor(Color.decode("0xEEEEEE"));
