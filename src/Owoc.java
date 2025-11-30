@@ -128,7 +128,8 @@ public class Owoc {
         animationState = AnimState.FALLEN;
     }
     public void collect() {
-
+        //todo???
+        is_matched = false;
         if (imageIndex > -1) {
             gatunek = gatunki[imageIndex];
             collectedFruits.replace(gatunek, collectedFruits.get(gatunek)+1) ;

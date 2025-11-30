@@ -9,7 +9,6 @@ import java.io.IOException;
 //list of known bugs:
 //special sometimes dont do anything
 //sometimes vertical or horizontal or flower trigger a cross???
-// fi
 
 public class Grid {
     int sel1x, sel1y, sel2x, sel2y;
@@ -291,9 +290,9 @@ public class Grid {
                     || (grid[x][y].matchesY >= 5 && sameFruitsBelow(x,y) == 2)) {
                 grid[x][y].special = "flower";
             }
-            //if (grid[x][y].matchesX >= 3 && grid[x][y].matchesY >= 3) {
-//                grid[x][y].special = "bomb";
-//            }
+            if (grid[x][y].matchesX >= 3 && grid[x][y].matchesY >= 3) {
+                grid[x][y].special = "bomb";
+            }
             else if ((grid[x][y].matchesY == 4) && sameFruitsBelow(x,y) == 3) {
                 grid[x][y].special = "vertical";
             } else if ((grid[x][y].matchesX == 4) && sameFruitsOnRight(x,y) == 1) {
@@ -305,9 +304,6 @@ public class Grid {
             System.out.println("animState: "+grid[special_x][special_y].animationState);
             //todo: invent a system of chain reactions that does not cause infinite loops
             //problem: bombs exploded by bombs do not explode other fruits
-            if (grid[special_x][special_y].animationState == AnimState.EXPLODING) {
-                return false;
-            }
             switch (name) {
                 case "flower":
                     for (int x=0;x<10;x++) {
@@ -316,30 +312,34 @@ public class Grid {
                                 if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
                             }
                         }
-                }
-//                case  "bomb"://todo:bomb is not working properly
-//                    for (int x=special_x-1;x<=(special_x+1);x++) {
-//                        for (int y=special_y-1;y<=(special_y+1);y++) {
-////                            if (0<=x && x< 10 && 0<=y && y < 10) {
-////                                if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
-////                            }
-//                            try {
-//                                if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
-//                            } catch (Exception e) {
-//                                System.out.println(e);
-//                            }
-//
-//                        }
-//                    }
+                    }
+                    break;
+                    case  "bomb"://todo:bomb is not working properly
+                        for (int x=special_x-1;x<=(special_x+1);x++) {
+                            for (int y=special_y-1;y<=(special_y+1);y++) {
+                                if (0<=x && x< 10 && 0<=y && y < 10) {
+                                    if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
+                                }
+                                try {
+                                    if (grid[x][y].special == "none") explodeAFruit(x,y, iteration);
+                                } catch (Exception e) {
+                                    System.out.println(e);
+                                }
+
+                            }
+                        }
+                        break;
                     case "vertical":
                         for (int y=0; y<=9; y++) {
                             if (grid[special_x][y].special == "none") explodeAFruit(special_x,y, iteration);
                         }
+                        break;
 
                     case "horizontal":
                         for (int x=0;x<=9;x++) {
                             if (grid[x][special_y].special == "none") explodeAFruit(x,special_y, iteration);
                         }
+                        break;
 
             }
             return true;
@@ -375,12 +375,12 @@ public class Grid {
 
             }
             else {
-
-                explodeSpecial(grid[x][y].special,x,y,0);
                 grid[x][y].isAnimated = true;
                 grid[x][y].animationState = AnimState.EXPLODING;
                 grid[x][y].nextImageIndex = -1;
                 grid[x][y].deleteSpecialAfterExploding = true;//because we are using up an existing special
+                explodeSpecial(grid[x][y].special,x,y,0);
+
             }
             return true;
         }
