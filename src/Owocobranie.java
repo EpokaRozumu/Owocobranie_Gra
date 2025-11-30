@@ -23,8 +23,10 @@ public class Owocobranie {
         f.setBackground(Color.BLACK);
         //Po powiększeniu okna panel powinien pozostać na środku, a nie
         //w lewym górnym rogu.
-        f.setLayout(new BoxLayout(f.getContentPane(), BoxLayout.Y_AXIS));
+        f.setLayout(new BoxLayout(f.getContentPane(),BoxLayout.PAGE_AXIS));
         GamePanel panel = new GamePanel();
+        //panel.
+        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
         //panel.setMaximumSize(new Dimension(800, 600));
         //panel.setBackground(Color.darkGray);
         f.add(panel);

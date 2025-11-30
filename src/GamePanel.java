@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -24,13 +25,13 @@ class GamePanel extends JPanel {
     int turnsLeft;
     int fruitsToWin;
     public GamePanel() {
-
         setupNewGame();
         setBorder(BorderFactory.createLineBorder(Color.black));
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
+
                 redSquare.moveSquare(e.getX(),e.getY());
-                boolean madeAMove = grid.handleSwapping(e);
+                boolean madeAMove = grid.handleSwapping(e,zoom);
                 if (madeAMove) {
                     turnsLeft--;
                 }
@@ -81,15 +82,17 @@ class GamePanel extends JPanel {
     }
     public void paintComponent(Graphics g) {
         //g will actually be Graphics2d
+        Graphics2D g2 = (Graphics2D) g;
+        g2.scale(zoom,zoom);
         zoom = getHeight()/600.0f;
-        super.paintComponent(g);
+        super.paintComponent(g2);
         //displayCollectedFruits(g);
-        displayGameState(g,250,110);
-        g.setFont(largeFont);
-        g.drawString("Owocobranie", 240, 55);//may replace this with image of a title
+        displayGameState(g2,250,110);
+        g2.setFont(largeFont);
+        g2.drawString("Owocobranie", 240, 55);//may replace this with image of a title
 
-        displayDebugInfo(g);
-        grid.paintGrid(g);
+        displayDebugInfo(g2);
+        grid.paintGrid(g2);
     }
     public Dimension getPreferredSize() {
         return new Dimension(800, 600);

@@ -104,6 +104,7 @@ public class Grid {
                     } else {
                         break;
                     }
+
                 }
             }
             return l;
@@ -208,10 +209,10 @@ public class Grid {
                 grid[sel1x][sel1y].animationState = AnimState.RESWAPPING;
             }
         }
-        public boolean handleSwapping(MouseEvent e) {
+        public boolean handleSwapping(MouseEvent e, float zoom) {
             //returns true if a move is made
-            int mx = e.getX();
-            int my = e.getY();
+            int mx = (int) (e.getX()/zoom);
+            int my = (int) (e.getY()/zoom);
             animationState = getAnimationState();
             boolean mxInGrid = GRID_OFFSET_X <mx && mx <GRID_OFFSET_X+10*SLOT_SPAN;
             boolean myInGrid = GRID_OFFSET_Y+SLOT_SPAN < my && my <GRID_OFFSET_Y+10*SLOT_SPAN;
