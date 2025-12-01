@@ -328,7 +328,7 @@ public class Grid {
                         break;
                     case "vertical":
                         flashset.newFlash(gridToScreenX(special_x),GRID_OFFSET_Y,SLOT_SPAN,SLOT_SPAN*10,iteration*DELAY_MULTIPIER);
-                        for (int y=0; y<=9; y++) {
+                        for (int y=1; y<=9; y++) {//exculde invisible, topmost row
                             explodeAFruit(special_x,y, iteration);
                         }
                         break;

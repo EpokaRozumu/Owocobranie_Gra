@@ -20,22 +20,26 @@ class GamePanel extends JPanel {
     Font largeFont= new Font("Comic Sans MS", Font.BOLD, 50);
     Font smallFont = new Font("Comic Sans MS",Font.BOLD,12);
     Font mediumFont = new Font("Comic Sans MS",Font.BOLD,20);
+
     float zoom = 1f;
     int goalFruitIndex ;
     int turnsLeft;
     int fruitsToWin;
+    boolean gameRunning = true;
+    boolean gameWon = false;
     public GamePanel() {
         setupNewGame();
         setBorder(BorderFactory.createLineBorder(Color.black));
         //setBackground(Color.darkGray);
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                redSquare.moveSquare(e.getX(),e.getY());
-                boolean madeAMove = grid.handleSwapping(e,zoom);
-                if (madeAMove) {
-                    turnsLeft--;
+                if (gameRunning) {
+                    boolean madeAMove = grid.handleSwapping(e,zoom);
+                    if (madeAMove) {
+                        turnsLeft--;
+                    }
+                    repaint();
                 }
-                repaint();
             }
         });
         addMouseMotionListener(new MouseAdapter() {
@@ -47,16 +51,27 @@ class GamePanel extends JPanel {
         Timer timer = new Timer(TIMER_SPEED,new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 secondsPassed++;
-                grid.update(TIMER_SPEED);
+                if (gameRunning) {
+                    grid.update(TIMER_SPEED);
+                }
+                update();
                 repaint();
             }
         });
         timer.start();
     }
-    //all custom painting here
+    public void update() {
+        if (fruitsToWin <= Owoc.getCollectedFruitsOfIndex(goalFruitIndex)) {//if all needed fruits are collected
+            gameRunning = false;
+            gameWon = true;
+        } else if (turnsLeft <= 0) {
+            gameRunning = false;
+            gameWon = false;
+        }
+    }
     public void setupNewGame() {
-        turnsLeft = 40;
-        fruitsToWin = 30;
+        turnsLeft = 13;
+        fruitsToWin = 50;
         goalFruitIndex = Owoc.random();
     }
     public void displayGameState(Graphics g, int x, int y) {
@@ -93,6 +108,15 @@ class GamePanel extends JPanel {
 
         displayDebugInfo(g2);
         grid.paintGrid(g2);
+        if (!gameRunning) {
+            g.setColor(Color.red);
+            g.setFont(largeFont);
+            if (gameWon) {
+                g2.drawString("You won!", 70, 300);
+            } else {
+                g2.drawString("Game Over!", 70, 300);
+            }
+        }
     }
     public Dimension getPreferredSize() {
         return new Dimension(800, 600);
