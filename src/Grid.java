@@ -5,11 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 //import java.util.ArrayList;
-//this is a comment
-//list of known bugs:
-//special sometimes dont do anything
-//sometimes vertical or horizontal or flower trigger a cross???
-
+//todo: add effect animation to make special explosions more readable - maybe a new class?
 public class Grid {
     int sel1x, sel1y, sel2x, sel2y;
     static final int SLOT_SPAN = 40;
@@ -301,9 +297,8 @@ public class Grid {
         }
         public boolean explodeSpecial(String name,int special_x, int special_y, int iteration) {
             iteration++;
-
+            //todo: wait some ms before making a special explosion, cause end effect shouldnt happen stiumunalusly
             System.out.println("exploding: "+name+"x:" +special_x + " y: " + special_y + "iteration: " +iteration);
-            //todo: invent a system of chain reactions that does not cause infinite loops
             //problem: bombs exploded by bombs do not explode other fruits
             switch (name) {
                 case "flower":
@@ -315,7 +310,7 @@ public class Grid {
                         }
                     }
                     break;
-                    case  "bomb"://todo:bomb is not working properly
+                    case  "bomb":
                         for (int x=special_x-1;x<=(special_x+1);x++) {
                             for (int y=special_y-1;y<=(special_y+1);y++) {
                                 if (0<=x && x< 10 && 0<=y && y < 10) {
@@ -360,24 +355,23 @@ public class Grid {
             }
         }
         public boolean explodeAFruit(int x, int y, int iteration) {
+            //todo: wait some ms before exploding, proportional to iteration variable. i=0 => 0ms, i=1 = 200ms, i=2 => 400ms
             if (grid[x][y].animationState != AnimState.READY) {
                 return false;
             }
+            grid[x][y].isAnimated = true;
+            grid[x][y].animationState = AnimState.EXPLODING;
+            grid[x][y].animationDelay = iteration*10;
             if (grid[x][y].special == "none") {
                 assingnSpecial(x, y);
-                grid[x][y].isAnimated = true;
-                grid[x][y].animationState = AnimState.EXPLODING;
                 if (grid[x][y].special == "none") {
                     grid[x][y].nextImageIndex = -1;
                 } else {
                     grid[x][y].nextImageIndex = grid[x][y].imageIndex;
                 }
                 grid[x][y].deleteSpecialAfterExploding = false;//because we are creating a new special
-
             }
             else {
-                grid[x][y].isAnimated = true;
-                grid[x][y].animationState = AnimState.EXPLODING;
                 grid[x][y].nextImageIndex = -1;
                 grid[x][y].deleteSpecialAfterExploding = true;//because we are using up an existing special
                 explodeSpecial(grid[x][y].special,x,y,iteration);

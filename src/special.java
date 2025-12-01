@@ -1,5 +1,5 @@
 public enum special {
-    VETICAL,
+    VERTICAL,
     HORIZONTAL,
     FLOWER,
     BOMB

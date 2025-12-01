@@ -29,7 +29,6 @@ class GamePanel extends JPanel {
         setBorder(BorderFactory.createLineBorder(Color.black));
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-
                 redSquare.moveSquare(e.getX(),e.getY());
                 boolean madeAMove = grid.handleSwapping(e,zoom);
                 if (madeAMove) {

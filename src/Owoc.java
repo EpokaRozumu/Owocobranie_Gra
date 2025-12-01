@@ -31,9 +31,10 @@ public class Owoc {
     boolean is_matched = false;
 
     boolean isAnimated;
-    double relative_speed = 1.0;
+    double relative_speed;
 
     AnimState animationState;
+    int animationDelay = 0;
     int nextX;//for animation purposes
     int nextY;
     int prevX;//for finishing animation
@@ -41,7 +42,7 @@ public class Owoc {
 
     String gatunek;
     String special;
-    boolean deleteSpecialAfterExploding = false;
+    boolean deleteSpecialAfterExploding;
     int imageIndex = 0;//-1 if this fruit was exploded
     //image index is useful, because it takes less space if fruits hold only their type, and not a whole image
     //I hope it will make this program faster?
@@ -133,7 +134,7 @@ public class Owoc {
         if (imageIndex > -1) {
             gatunek = gatunki[imageIndex];
             collectedFruits.replace(gatunek, collectedFruits.get(gatunek)+1) ;
-            if (special == "none") {
+            if (special == "none" || deleteSpecialAfterExploding) {
                 imageIndex = -1;
             }
 
@@ -147,11 +148,14 @@ public class Owoc {
         //This function is called by Grid's update animation
         //which is called repeatadly by the Swing timer
         //explosion.update();
-        //System.out.println(animationState);
+        if (animationDelay > 0) {
+            animationDelay -= 1;
+            return;
+        }
         if (animationState == AnimState.EXPLODING) {
             if (height < 80) {
-                height += 2;
-                width += 2;
+                height += 4;
+                width += 4;
             } else {
                 width = 40;
                 height = 40;
