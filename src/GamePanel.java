@@ -27,6 +27,7 @@ class GamePanel extends JPanel {
     public GamePanel() {
         setupNewGame();
         setBorder(BorderFactory.createLineBorder(Color.black));
+        //setBackground(Color.darkGray);
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 redSquare.moveSquare(e.getX(),e.getY());

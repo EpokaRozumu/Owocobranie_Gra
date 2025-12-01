@@ -11,12 +11,12 @@ public class Grid {
     static final int SLOT_SPAN = 40;
     static final int GRID_OFFSET_X = 200;
     static final int GRID_OFFSET_Y = 150;
-
+    static final int DELAY_MULTIPIER = 10;
     AnimState animationState;
     ParticleSource particleSource;
 
     Owoc[][] grid = new Owoc[10][10];
-
+    Flashmaker flashset = new Flashmaker();
 
     public Grid() {
         Owoc.loadImages();
@@ -311,6 +311,7 @@ public class Grid {
                     }
                     break;
                     case  "bomb":
+                        flashset.newFlash(gridToScreenX(special_x-1),gridToScreenY(special_y-1),SLOT_SPAN*3,SLOT_SPAN*3,iteration*DELAY_MULTIPIER);
                         for (int x=special_x-1;x<=(special_x+1);x++) {
                             for (int y=special_y-1;y<=(special_y+1);y++) {
                                 if (0<=x && x< 10 && 0<=y && y < 10) {
@@ -326,12 +327,14 @@ public class Grid {
                         }
                         break;
                     case "vertical":
+                        flashset.newFlash(gridToScreenX(special_x),GRID_OFFSET_Y,SLOT_SPAN,SLOT_SPAN*10,iteration*DELAY_MULTIPIER);
                         for (int y=0; y<=9; y++) {
                             explodeAFruit(special_x,y, iteration);
                         }
                         break;
 
                     case "horizontal":
+                        flashset.newFlash(GRID_OFFSET_X,gridToScreenY(special_y),SLOT_SPAN*10,SLOT_SPAN,iteration*DELAY_MULTIPIER);
                         for (int x=0;x<=9;x++) {
                             explodeAFruit(x,special_y, iteration);
                         }
@@ -361,7 +364,7 @@ public class Grid {
             }
             grid[x][y].isAnimated = true;
             grid[x][y].animationState = AnimState.EXPLODING;
-            grid[x][y].animationDelay = iteration*10;
+            grid[x][y].animationDelay = iteration*DELAY_MULTIPIER;
             if (grid[x][y].special == "none") {
                 assingnSpecial(x, y);
                 if (grid[x][y].special == "none") {
@@ -456,6 +459,7 @@ public class Grid {
     //important functions
     public void update(int timer_step) {
         particleSource.update();
+        flashset.update();
         boolean isAnyAnimated = false;
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
@@ -509,6 +513,7 @@ public class Grid {
         g.drawString(x + "," + y, grid[x][y].x, grid[x][y].y+6);
     }
     public void paintGrid(Graphics g) {
+        flashset.draw(g);
         particleSource.draw(g);
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
