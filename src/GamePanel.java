@@ -78,8 +78,9 @@ class GamePanel extends JPanel {
     }
     public void setupNewGame(int level) {
         grid = new Grid(level);
-        turnsLeft = 999;
+        turnsLeft = 50;
         fruitsToWin = 50;
+        Owoc.eraseCollectedFruits();
         goalFruitIndex = Owoc.random();
     }
     public void displayGameState(Graphics g, int x, int y) {

@@ -143,6 +143,9 @@ public class Owoc {
     public  static int getCollectedFruitsOfIndex(int index) {
         return collectedFruits.get(gatunki[index]);
     }
+    public static void eraseCollectedFruits() {
+        collectedFruits.forEach((k,v)->{v = 0;});
+    }
 
     public void updateAnimation(int timer_step) {
         //This function is called by Grid's update animation
