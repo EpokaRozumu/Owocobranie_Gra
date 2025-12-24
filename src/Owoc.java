@@ -8,8 +8,8 @@ import java.util.HashMap;
 
 public class Owoc {
 
-    static final String[] gatunki = {"cytryna", "pomarancza","arbuz","wisnia","winogrono"};
-    static final String[] fruitImagePaths = {"cytryna.bmp","pomarancza.bmp","arbuz.bmp","wisnia.bmp","winogrono.bmp"};
+    static final String[] gatunki = {"cytryna", "pomarancza","arbuz","wisnia","winogrono", "malina","jagoda"};
+    static final String[] fruitImagePaths = {"cytryna.bmp","pomarancza.bmp","arbuz.bmp","wisnia.bmp","winogrono.bmp","malina.png", "jagoda.png"};
     static final String[] specials = {"horizontal", "vertical", "flower","bomb"};
     static final String[] specialPaths = {"horizontal_tag.png", "vertical_tag.png", "flower_tag.png", "bomb_tag.png"};
     static HashMap<String,Integer> collectedFruits = new HashMap<String, Integer>();
@@ -90,7 +90,7 @@ public class Owoc {
         return images[index];
     }
     public static int random() {
-        return (int)(Math.random() * (gatunki.length));
+        return (int)(Math.random() * (gatunki.length -3 + GamePanel.selectedLevel));
     }
     public static void loadImages()  {
         for (int i = 0; i < gatunki.length; i++) {
@@ -172,7 +172,7 @@ public class Owoc {
             relative_speed = 0.5;//swapping should be slower than falling
             //todo: for some reason reswapping is still as fast as falling...
         } else {
-            relative_speed = 1.0;
+            relative_speed = 1.2;
         }
 
         if (animationState == AnimState.SWAPPING || animationState == AnimState.RESWAPPING || animationState == AnimState.FALLING) {//if animation needs movement

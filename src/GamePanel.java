@@ -14,7 +14,7 @@ import java.io.IOException;
 
 class GamePanel extends JPanel {
     RedSquare redSquare = new RedSquare();
-    Grid grid = new Grid();
+    Grid grid = new Grid(1);
     final int TIMER_SPEED = 30;//best - 30ms\
     int secondsPassed = 0;
     Font largeFont= new Font("Comic Sans MS", Font.BOLD, 50);
@@ -30,9 +30,9 @@ class GamePanel extends JPanel {
     boolean gameRunning = true;
     boolean gameWon = false;
     public GamePanel() {
-        unlockedLevel = 1;
+        unlockedLevel = 3;
         selectedLevel = 1;
-        setupNewGame();
+        setupNewGame(selectedLevel);
         setBorder(BorderFactory.createLineBorder(Color.black));
         //setBackground(Color.darkGray);
         addMouseListener(new MouseAdapter() {
@@ -65,6 +65,9 @@ class GamePanel extends JPanel {
         timer.start();
     }
     public void update() {
+        if (selectedLevel != grid.level) {
+            setupNewGame(selectedLevel);
+        }
         if (fruitsToWin <= Owoc.getCollectedFruitsOfIndex(goalFruitIndex)) {//if all needed fruits are collected
             gameRunning = false;
             gameWon = true;
@@ -73,7 +76,8 @@ class GamePanel extends JPanel {
             gameWon = false;
         }
     }
-    public void setupNewGame() {
+    public void setupNewGame(int level) {
+        grid = new Grid(level);
         turnsLeft = 999;
         fruitsToWin = 50;
         goalFruitIndex = Owoc.random();

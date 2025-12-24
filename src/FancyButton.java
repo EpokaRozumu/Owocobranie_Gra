@@ -16,11 +16,10 @@ public class FancyButton extends JButton {
         this.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (level <= GamePanel.unlockedLevel) {
-                    GamePanel.selectedLevel = level;
-
                     int chosenOption = JOptionPane.showConfirmDialog(null, "Do you want to start a new level?", "Level " + level, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                     if (chosenOption == JOptionPane.YES_OPTION) {
-                        System.out.println("changing level to " + level);
+                        //System.out.println("changing level to " + level);
+                        GamePanel.selectedLevel = level;
                     }
                 }
 

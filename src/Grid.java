@@ -11,13 +11,15 @@ public class Grid {
     static final int GRID_OFFSET_X = 200;
     static final int GRID_OFFSET_Y = 150;
     static final int DELAY_MULTIPIER = 10;
+    int level;
     AnimState animationState;
     ParticleSource particleSource;
-
     Owoc[][] grid = new Owoc[10][10];
     Flashmaker flashset = new Flashmaker();
 
-    public Grid() {
+    public Grid(int level) {
+        this.level = level;
+        System.out.println("Level " + level);
         Owoc.loadImages();
         particleSource = new ParticleSource(50,50);
         for (int x = 0; x < 10; x++) {
