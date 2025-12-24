@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 //import java.util.ArrayList;
-//todo: add effect animation to make special explosions more readable - maybe a new class?
 public class Grid {
     int sel1x, sel1y, sel2x, sel2y;
     static final int SLOT_SPAN = 40;
@@ -297,7 +296,6 @@ public class Grid {
         }
         public boolean explodeSpecial(String name,int special_x, int special_y, int iteration) {
             iteration++;
-            //todo: wait some ms before making a special explosion, cause end effect shouldnt happen stiumunalusly
             System.out.println("exploding: "+name+"x:" +special_x + " y: " + special_y + "iteration: " +iteration);
             //problem: bombs exploded by bombs do not explode other fruits
             switch (name) {
@@ -358,7 +356,6 @@ public class Grid {
             }
         }
         public boolean explodeAFruit(int x, int y, int iteration) {
-            //todo: wait some ms before exploding, proportional to iteration variable. i=0 => 0ms, i=1 = 200ms, i=2 => 400ms
             if (grid[x][y].animationState != AnimState.READY) {
                 return false;
             }

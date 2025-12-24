@@ -25,9 +25,13 @@ class GamePanel extends JPanel {
     int goalFruitIndex ;
     int turnsLeft;
     int fruitsToWin;
+    static int unlockedLevel;
+    static int selectedLevel;
     boolean gameRunning = true;
     boolean gameWon = false;
     public GamePanel() {
+        unlockedLevel = 1;
+        selectedLevel = 1;
         setupNewGame();
         setBorder(BorderFactory.createLineBorder(Color.black));
         //setBackground(Color.darkGray);
@@ -70,7 +74,7 @@ class GamePanel extends JPanel {
         }
     }
     public void setupNewGame() {
-        turnsLeft = 13;
+        turnsLeft = 999;
         fruitsToWin = 50;
         goalFruitIndex = Owoc.random();
     }
@@ -104,8 +108,9 @@ class GamePanel extends JPanel {
         //displayCollectedFruits(g);
         displayGameState(g2,250,110);
         g2.setFont(largeFont);
+        g2.setColor(Color.decode("#FF9D81"));
         g2.drawString("Owocobranie", 240, 55);//may replace this with image of a title
-
+        g2.setColor(Color.black);
         displayDebugInfo(g2);
         grid.paintGrid(g2);
         if (!gameRunning) {
@@ -117,8 +122,10 @@ class GamePanel extends JPanel {
                 g2.drawString("Game Over!", 70, 300);
             }
         }
-    }
+        }
+
     public Dimension getPreferredSize() {
         return new Dimension(800, 600);
     }
 }
+

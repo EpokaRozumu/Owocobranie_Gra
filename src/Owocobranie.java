@@ -33,11 +33,11 @@ public class Owocobranie {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.LINE_AXIS));
         f.add(buttonPanel);
-        FancyButton level1Button = new FancyButton("Level 1");
+        FancyButton level1Button = new FancyButton(1);
         buttonPanel.add(level1Button);
-        FancyButton level2Button = new FancyButton("Level 2");
+        FancyButton level2Button = new FancyButton(2);
         buttonPanel.add(level2Button);
-        FancyButton level3Button = new FancyButton("Level 3");
+        FancyButton level3Button = new FancyButton(3);
         buttonPanel.add(level3Button);
         f.pack();
         f.setVisible(true);
