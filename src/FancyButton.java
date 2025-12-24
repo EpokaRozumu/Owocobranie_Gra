@@ -20,6 +20,7 @@ public class FancyButton extends JButton {
                     if (chosenOption == JOptionPane.YES_OPTION) {
                         //System.out.println("changing level to " + level);
                         GamePanel.selectedLevel = level;
+                        GamePanel.newGameRequested = true;
                     }
                 }
 

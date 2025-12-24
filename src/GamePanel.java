@@ -27,6 +27,7 @@ class GamePanel extends JPanel {
     int fruitsToWin;
     static int unlockedLevel;
     static int selectedLevel;
+    static boolean newGameRequested = false;
     boolean gameRunning = true;
     boolean gameWon = false;
     public GamePanel() {
@@ -65,8 +66,9 @@ class GamePanel extends JPanel {
         timer.start();
     }
     public void update() {
-        if (selectedLevel != grid.level) {
+        if (newGameRequested) {
             setupNewGame(selectedLevel);
+            newGameRequested = false;
         }
         if (fruitsToWin <= Owoc.getCollectedFruitsOfIndex(goalFruitIndex)) {//if all needed fruits are collected
             gameRunning = false;
