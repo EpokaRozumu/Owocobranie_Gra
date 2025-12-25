@@ -31,7 +31,7 @@ class GamePanel extends JPanel {
     boolean gameRunning = true;
     boolean gameWon = false;
     public GamePanel() {
-        unlockedLevel = 3;
+        unlockedLevel = 1;
         selectedLevel = 1;
         setupNewGame(selectedLevel);
         setBorder(BorderFactory.createLineBorder(Color.black));
@@ -80,10 +80,12 @@ class GamePanel extends JPanel {
     }
     public void setupNewGame(int level) {
         grid = new Grid(level);
-        turnsLeft = 50;
-        fruitsToWin = 50;
+        turnsLeft = 20;
+        fruitsToWin = 20;
         Owoc.eraseCollectedFruits();
         goalFruitIndex = Owoc.random();
+        gameRunning = true;
+        gameWon = false;
     }
     public void displayGameState(Graphics g, int x, int y) {
         g.setFont(mediumFont);
@@ -124,7 +126,14 @@ class GamePanel extends JPanel {
             g.setColor(Color.red);
             g.setFont(largeFont);
             if (gameWon) {
-                g2.drawString("You won!", 70, 300);
+                g2.drawString("You won!", 150, 300);
+                if (selectedLevel <= unlockedLevel) {
+                    if (selectedLevel == unlockedLevel) {
+                        unlockedLevel = selectedLevel + 1;
+                    }
+                    g2.drawString("Level " + unlockedLevel + " unlocked!", 150, 400);
+
+                }
             } else {
                 g2.drawString("Game Over!", 70, 300);
             }

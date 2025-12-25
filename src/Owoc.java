@@ -144,7 +144,7 @@ public class Owoc {
         return collectedFruits.get(gatunki[index]);
     }
     public static void eraseCollectedFruits() {
-        collectedFruits.forEach((k,v)->{v = 0;});
+        collectedFruits.replaceAll((k,v) -> 0);
     }
 
     public void updateAnimation(int timer_step) {

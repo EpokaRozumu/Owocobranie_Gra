@@ -8,7 +8,8 @@ import java.io.IOException;
 public class Grid {
     int sel1x, sel1y, sel2x, sel2y;
     static final int SLOT_SPAN = 40;
-    static final int GRID_OFFSET_X = 200;
+    static final int INITIAL_GRID_OFFSET_X = 200;
+    public  int gridOffsetX = 200;
     static final int GRID_OFFSET_Y = 150;
     static final int DELAY_MULTIPIER = 10;
     int level;
@@ -31,17 +32,17 @@ public class Grid {
     }
     //helper functions
         private int gridToScreenX(int x) {
-            return x * SLOT_SPAN + GRID_OFFSET_X;
+            return x * SLOT_SPAN + gridOffsetX;
         }
         private int gridToScreenY(int y) {
             return y * SLOT_SPAN + GRID_OFFSET_Y;
         }
         private int screenToGridX(int x) {
-            if (x < GRID_OFFSET_X || x > GRID_OFFSET_X + SLOT_SPAN*10) {
+            if (x < gridOffsetX || x > gridOffsetX + SLOT_SPAN*10) {
                 System.out.println("No fruit matches mouse x");
                 return -1;//
             }
-            return (int)(x - GRID_OFFSET_X)/SLOT_SPAN;
+            return (int)(x - gridOffsetX)/SLOT_SPAN;
         }
         private int screenToGridY(int y) {
             if (y < GRID_OFFSET_Y || y > GRID_OFFSET_Y + SLOT_SPAN*10) {
@@ -217,7 +218,7 @@ public class Grid {
             int mx = (int) (e.getX()/zoom);
             int my = (int) (e.getY()/zoom);
             animationState = getAnimationState();
-            boolean mxInGrid = GRID_OFFSET_X <mx && mx <GRID_OFFSET_X+10*SLOT_SPAN;
+            boolean mxInGrid = gridOffsetX <mx && mx <gridOffsetX+10*SLOT_SPAN;
             boolean myInGrid = GRID_OFFSET_Y+SLOT_SPAN < my && my <GRID_OFFSET_Y+10*SLOT_SPAN;
             //                                 ^ fruits in top row are untouchable
             if (mxInGrid && myInGrid && animationState == AnimState.READY) {
@@ -334,7 +335,7 @@ public class Grid {
                         break;
 
                     case "horizontal":
-                        flashset.newFlash(GRID_OFFSET_X,gridToScreenY(special_y),SLOT_SPAN*10,SLOT_SPAN,iteration*DELAY_MULTIPIER);
+                        flashset.newFlash(gridOffsetX,gridToScreenY(special_y),SLOT_SPAN*10,SLOT_SPAN,iteration*DELAY_MULTIPIER);
                         for (int x=0;x<=9;x++) {
                             explodeAFruit(x,special_y, iteration);
                         }
