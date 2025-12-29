@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Graphics2D;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -56,9 +57,7 @@ class GamePanel extends JPanel {
         Timer timer = new Timer(TIMER_SPEED,new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 secondsPassed++;
-                if (gameRunning) {
-                    grid.update(TIMER_SPEED);
-                }
+                grid.update(TIMER_SPEED);
                 update();
                 repaint();
             }
@@ -81,7 +80,7 @@ class GamePanel extends JPanel {
     public void setupNewGame(int level) {
         grid = new Grid(level);
         turnsLeft = 20;
-        fruitsToWin = 20;
+        fruitsToWin = 40;
         Owoc.eraseCollectedFruits();
         goalFruitIndex = Owoc.random();
         gameRunning = true;
@@ -112,6 +111,8 @@ class GamePanel extends JPanel {
         //g will actually be Graphics2d
         Graphics2D g2 = (Graphics2D) g;
         g2.scale(zoom,zoom);
+        //g2.clearRect(0, 0, getWidth(), getHeight());
+        //g2.translate(getWidth()/10,0);
         zoom = getHeight()/600.0f;
         super.paintComponent(g2);
         //displayCollectedFruits(g);
@@ -126,14 +127,18 @@ class GamePanel extends JPanel {
             g.setColor(Color.red);
             g.setFont(largeFont);
             if (gameWon) {
-                g2.drawString("You won!", 150, 300);
+                g2.setColor(Color.getColor("#FFA300"));
+                //g2.fillRect(200,200,400,300);
+                g2.setColor(Color.black);
+
+                g2.drawString("You won!", 200, 300);
                 if (selectedLevel <= unlockedLevel) {
                     if (selectedLevel == unlockedLevel) {
                         unlockedLevel = selectedLevel + 1;
                     }
                     g2.drawString("Level " + unlockedLevel + " unlocked!", 150, 400);
-
                 }
+
             } else {
                 g2.drawString("Game Over!", 70, 300);
             }

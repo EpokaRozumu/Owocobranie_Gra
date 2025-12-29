@@ -8,7 +8,7 @@ public class Flash {
     int animation_duration;
     int animation_delay;
     Flash(int x, int y, int width, int height, int animation_delay) {
-        animation_duration = 10;
+        animation_duration = 25;
         this.animation_delay = animation_delay;
         this.x = x;
         this.y = y;
@@ -21,7 +21,6 @@ public class Flash {
         } else {
             animation_duration--;
         }
-
     }
     public void draw(Graphics g) {
         if (animation_delay > 0) return;

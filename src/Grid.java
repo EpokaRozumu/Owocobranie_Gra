@@ -304,9 +304,12 @@ public class Grid {
             switch (name) {
                 case "flower":
                     for (int x=0;x<10;x++) {
-                        for (int y=0;y<10;y++) {
+                        for (int y=1;y<10;y++) {//dont explode the first row
                             if (grid[x][y].imageIndex == grid[special_x][special_y].imageIndex) {
                                 explodeAFruit(x,y, iteration);
+                                //flashset.newLightning(special_x,special_y,x,y,iteration);
+                                flashset.newFlash(gridToScreenX(x),gridToScreenY(y),SLOT_SPAN,SLOT_SPAN,iteration);
+                                flashset.newLightning(gridToScreenX(x), gridToScreenY(y),gridToScreenX(special_x),gridToScreenY(special_y),iteration);
                             }
                         }
                     }
@@ -513,7 +516,7 @@ public class Grid {
         g.drawString(x + "," + y, grid[x][y].x, grid[x][y].y+6);
     }
     public void paintGrid(Graphics g) {
-        flashset.draw(g);
+        flashset.drawFlashes(g);
         particleSource.draw(g);
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
@@ -525,6 +528,7 @@ public class Grid {
                 //displayFruitDebugInfo(x,y,g);
             }
         }
+        flashset.drawLightnings(g);
         g.setColor(Color.decode("0xEEEEEE"));
         g.fillRect(gridToScreenX(0),gridToScreenY(0),SLOT_SPAN*10,SLOT_SPAN);
     }
