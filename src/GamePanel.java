@@ -111,11 +111,11 @@ class GamePanel extends JPanel {
         //g will actually be Graphics2d
         Graphics2D g2 = (Graphics2D) g;
         g2.scale(zoom,zoom);
-        //g2.clearRect(0, 0, getWidth(), getHeight());
-        //g2.translate(getWidth()/10,0);
+
         zoom = getHeight()/600.0f;
         super.paintComponent(g2);
-        //displayCollectedFruits(g);
+        g.setFont((mediumFont));
+        g.drawString("Highest unlocked level: " + unlockedLevel,300,580);
         displayGameState(g2,250,110);
         g2.setFont(largeFont);
         g2.setColor(Color.decode("#FF9D81"));
