@@ -32,7 +32,7 @@ public class Owocobranie {
         //panel.
         panel.setAlignmentX(Component.CENTER_ALIGNMENT);
         //panel.setMaximumSize(new Dimension(800, 600));
-        //panel.setBackground(Color.darkGray);
+
         f.add(panel);
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.LINE_AXIS));
@@ -54,7 +54,7 @@ public class Owocobranie {
     private static void update() {
         for (int l=1;l<=3;l++) {
             if(GamePanel.unlockedLevel >= l) {
-                //buttons[l-1].setBackground(Color.GREEN);
+                buttons[l-1].setBackground(Color.WHITE);
             } else {
                 buttons[l-1].setBackground(Color.DARK_GRAY);
             }

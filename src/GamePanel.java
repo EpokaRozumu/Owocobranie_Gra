@@ -32,11 +32,13 @@ class GamePanel extends JPanel {
     boolean gameRunning = true;
     boolean gameWon = false;
     public GamePanel() {
-        unlockedLevel = 1;
+        Memory memory = new Memory();
+
+        unlockedLevel = memory.readSavedLevel();
         selectedLevel = 1;
         setupNewGame(selectedLevel);
         setBorder(BorderFactory.createLineBorder(Color.black));
-        //setBackground(Color.darkGray);
+        setBackground(Color.decode("#FFECEA"));
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 if (gameRunning) {
@@ -119,7 +121,16 @@ class GamePanel extends JPanel {
         displayGameState(g2,250,110);
         g2.setFont(largeFont);
         g2.setColor(Color.decode("#FF9D81"));
-        g2.drawString("Owocobranie", 240, 55);//may replace this with image of a title
+        if (gameRunning) {
+            g2.drawString("Owocobranie", 240, 55);//may replace this with image of a title
+        } else if (gameWon) {
+            g2.setColor(Color.getHSBColor(secondsPassed/100.0f, 1.0f, 1.0f));
+            g2.drawString("You won!", 240, 55);
+        } else {
+            g2.setColor(Color.BLACK);
+            g2.drawString("Game Over", 240, 55);
+        }
+
         g2.setColor(Color.black);
         displayDebugInfo(g2);
         grid.paintGrid(g2);
@@ -130,7 +141,7 @@ class GamePanel extends JPanel {
                 g2.setColor(Color.getColor("#FFA300"));
                 //g2.fillRect(200,200,400,300);
                 g2.setColor(Color.black);
-
+                g2.setColor(Color.getHSBColor(secondsPassed/100.0f, 1.0f, 1.0f));
                 g2.drawString("You won!", 200, 300);
                 if (selectedLevel <= unlockedLevel) {
                     if (selectedLevel == unlockedLevel) {
