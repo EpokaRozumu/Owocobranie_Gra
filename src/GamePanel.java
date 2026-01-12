@@ -16,6 +16,7 @@ import java.io.IOException;
 class GamePanel extends JPanel {
     RedSquare redSquare = new RedSquare();
     Grid grid = new Grid(1);
+    Memory memory = new Memory();
     final int TIMER_SPEED = 30;//best - 30ms\
     int secondsPassed = 0;
     Font largeFont= new Font("Comic Sans MS", Font.BOLD, 50);
@@ -32,8 +33,6 @@ class GamePanel extends JPanel {
     boolean gameRunning = true;
     boolean gameWon = false;
     public GamePanel() {
-        Memory memory = new Memory();
-
         unlockedLevel = memory.readSavedLevel();
         selectedLevel = 1;
         setupNewGame(selectedLevel);
@@ -146,6 +145,7 @@ class GamePanel extends JPanel {
                 if (selectedLevel <= unlockedLevel) {
                     if (selectedLevel == unlockedLevel) {
                         unlockedLevel = selectedLevel + 1;
+                        memory.writeSavedLevel(unlockedLevel);
                     }
                     g2.drawString("Level " + unlockedLevel + " unlocked!", 150, 400);
                 }
