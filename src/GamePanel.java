@@ -1,5 +1,6 @@
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,16 +8,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Graphics2D;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 
 class GamePanel extends JPanel {
-    RedSquare redSquare = new RedSquare();
     Grid grid = new Grid(1);
+
     Memory memory = new Memory();
+
     final int TIMER_SPEED = 30;//best - 30ms\
     int secondsPassed = 0;
     Font largeFont= new Font("Comic Sans MS", Font.BOLD, 50);
@@ -38,6 +40,8 @@ class GamePanel extends JPanel {
         setupNewGame(selectedLevel);
         setBorder(BorderFactory.createLineBorder(Color.black));
         setBackground(Color.decode("#FFECEA"));
+
+
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 if (gameRunning) {
@@ -51,7 +55,6 @@ class GamePanel extends JPanel {
         });
         addMouseMotionListener(new MouseAdapter() {
             public void mouseDragged(MouseEvent e) {
-                redSquare.moveSquare(e.getX(),e.getY());
                 repaint();
             }
         });
@@ -87,9 +90,10 @@ class GamePanel extends JPanel {
         gameRunning = true;
         gameWon = false;
     }
+
     public void displayGameState(Graphics g, int x, int y) {
         g.setFont(mediumFont);
-        g.drawString("Moves left: " + turnsLeft, x, y);
+        if (gameRunning) g.drawString("Moves left: " + turnsLeft, x, y);
         int fruitsLeftToWin = fruitsToWin - Owoc.getCollectedFruitsOfIndex(goalFruitIndex);
         g.drawString(fruitsLeftToWin + "x    ", x+200, y);
         g.drawImage(Owoc.getImage(goalFruitIndex), x + 250,y-20,40,40,null);
@@ -99,7 +103,7 @@ class GamePanel extends JPanel {
         //g.drawString(String.valueOf(grid.animationState), 20, 600);
         g.setFont(smallFont);
         //g.drawString(secondsPassed + "", 20, 50);
-        g.drawString("zoom" + zoom,120,10);
+        //g.drawString("zoom" + zoom,120,10);
         //g.drawString("ZEBRANE OWOCE:", 20, 170);
     }
 
@@ -116,18 +120,18 @@ class GamePanel extends JPanel {
         zoom = getHeight()/600.0f;
         super.paintComponent(g2);
         g.setFont((mediumFont));
-        g.drawString("Highest unlocked level: " + unlockedLevel,300,580);
+        //g.drawString("Highest unlocked level: " + unlockedLevel,300,580);
         displayGameState(g2,250,110);
         g2.setFont(largeFont);
         g2.setColor(Color.decode("#FF9D81"));
         if (gameRunning) {
             g2.drawString("Owocobranie", 240, 55);//may replace this with image of a title
         } else if (gameWon) {
-            g2.setColor(Color.getHSBColor(secondsPassed/100.0f, 1.0f, 1.0f));
-            g2.drawString("You won!", 240, 55);
+            g2.setColor(Color.getHSBColor(secondsPassed/10.0f, 1.0f, 1.0f));
+            g2.drawString("YOU WIN!", 240, 55);
         } else {
             g2.setColor(Color.BLACK);
-            g2.drawString("Game Over", 240, 55);
+            g2.drawString("GAME OVER", 240, 55);
         }
 
         g2.setColor(Color.black);
@@ -137,21 +141,16 @@ class GamePanel extends JPanel {
             g.setColor(Color.red);
             g.setFont(largeFont);
             if (gameWon) {
-                g2.setColor(Color.getColor("#FFA300"));
-                //g2.fillRect(200,200,400,300);
-                g2.setColor(Color.black);
-                g2.setColor(Color.getHSBColor(secondsPassed/100.0f, 1.0f, 1.0f));
-                g2.drawString("You won!", 200, 300);
                 if (selectedLevel <= unlockedLevel) {
                     if (selectedLevel == unlockedLevel) {
                         unlockedLevel = selectedLevel + 1;
                         memory.writeSavedLevel(unlockedLevel);
                     }
-                    g2.drawString("Level " + unlockedLevel + " unlocked!", 150, 400);
+                    g2.setFont(mediumFont);
+                    g2.setColor(Color.getHSBColor(secondsPassed/100.0f, 1.0f, 1.0f));
+                    g2.drawString("Level " + unlockedLevel + " unlocked!", 240, 120);
                 }
 
-            } else {
-                g2.drawString("Game Over!", 70, 300);
             }
         }
         }

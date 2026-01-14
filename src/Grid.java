@@ -14,7 +14,6 @@ public class Grid {
     static final int DELAY_MULTIPIER = 10;
     int level;
     AnimState animationState;
-    ParticleSource particleSource;
     Owoc[][] grid = new Owoc[10][10];
     Flashmaker flashset = new Flashmaker();
 
@@ -22,7 +21,6 @@ public class Grid {
         this.level = level;
         System.out.println("Level " + level);
         Owoc.loadImages();
-        particleSource = new ParticleSource(50,50);
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
                 grid[x][y] = new Owoc(gridToScreenX(x), gridToScreenY(y));
@@ -307,9 +305,7 @@ public class Grid {
                         for (int y=1;y<10;y++) {//dont explode the first row
                             if (grid[x][y].imageIndex == grid[special_x][special_y].imageIndex) {
                                 explodeAFruit(x,y, iteration);
-                                //flashset.newLightning(special_x,special_y,x,y,iteration);
                                 flashset.newFlash(gridToScreenX(x),gridToScreenY(y),SLOT_SPAN,SLOT_SPAN,iteration);
-                                flashset.newLightning(gridToScreenX(x), gridToScreenY(y),gridToScreenX(special_x),gridToScreenY(special_y),iteration);
                             }
                         }
                     }
@@ -461,7 +457,6 @@ public class Grid {
         }
     //important functions
     public void update(int timer_step) {
-        particleSource.update();
         flashset.update();
         boolean isAnyAnimated = false;
         for (int x = 0; x < 10; x++) {
@@ -517,7 +512,6 @@ public class Grid {
     }
     public void paintGrid(Graphics g) {
         flashset.drawFlashes(g);
-        particleSource.draw(g);
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
                 grid[x][y].paintOwoc(g);
@@ -528,8 +522,7 @@ public class Grid {
                 //displayFruitDebugInfo(x,y,g);
             }
         }
-        flashset.drawLightnings(g);
-        g.setColor(Color.decode("0xEEEEEE"));
+        g.setColor(Color.decode("#FFECEA"));
         g.fillRect(gridToScreenX(0),gridToScreenY(0),SLOT_SPAN*10,SLOT_SPAN);
     }
 }

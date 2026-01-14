@@ -24,15 +24,9 @@ public class Owocobranie {
                 SwingUtilities.isEventDispatchThread());
         JFrame f = new JFrame("Owocobranie");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setBackground(Color.BLACK);
-        //Po powiększeniu okna panel powinien pozostać na środku, a nie
-        //w lewym górnym rogu.
         f.setLayout(new BoxLayout(f.getContentPane(),BoxLayout.PAGE_AXIS));
         GamePanel panel = new GamePanel();
-        //panel.
         panel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        //panel.setMaximumSize(new Dimension(800, 600));
-
         f.add(panel);
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.LINE_AXIS));
@@ -47,9 +41,11 @@ public class Owocobranie {
                 update();
             }
         });
+
         timer.start();
         f.pack();
         f.setVisible(true);
+
     }
     private static void update() {
         for (int l=1;l<=3;l++) {
